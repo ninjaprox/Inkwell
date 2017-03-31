@@ -1,5 +1,5 @@
 //
-//  GoogleFontsDownloader.swift
+//  GoogleFontsMetadata.swift
 //  Inkwell
 //
 // Copyright (c) 2017 Vinh Nguyen
@@ -25,7 +25,7 @@
 
 import Alamofire
 
-final class GoogleFontDownloader {
+final class GoogleFontsMetadata {
     private let APIEndpoint = "https://www.googleapis.com/webfonts/v1/webfonts"
     private let APIKey: String
     private let storage: Storage
@@ -35,16 +35,37 @@ final class GoogleFontDownloader {
         self.storage = storage
     }
 
-    func fetchMetadata() {
+    /// Fetch the Google Fonts metadata.
+    func fetch() {
         let destination: DownloadRequest.DownloadFileDestination = { _, _ in
             return (self.storage.metadataURL, [.removePreviousFile, .createIntermediateDirectories])
         }
+        let _ = Alamofire.download(APIEndpoint,
+                                   method: .get,
+                                   parameters: ["key": APIKey],
+                                   encoding: URLEncoding.queryString,
+                                   headers: nil,
+                                   to: destination)
+    }
+}
 
-        Alamofire.download(APIEndpoint,
-                           method: .get,
-                           parameters: ["key": APIKey],
-                           encoding: URLEncoding.queryString,
-                           headers: nil,
-                           to: destination)
+extension GoogleFontsMetadata {
+    struct Family {
+        let name: String
+        let files: [String]
+
+        init?(json: [String: Any], variants: [Font.Variant]?) {
+            guard let files = json["files"] as? [String: String] else { return nil }
+            guard let name = json["family"] as? String else { return nil }
+
+            self.name = name
+            self.files = files.flatMap { (key, value) in
+                if let variants = variants?.map({ $0.rawValue }) {
+                    return variants.contains(key) ? value : nil
+                } else {
+                    return value
+                }
+            }
+        }
     }
 }
