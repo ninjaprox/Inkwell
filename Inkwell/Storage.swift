@@ -27,6 +27,7 @@ final class Storage {
     private let domain = "me.vinhis.Inkwell"
     private let metadataFile = "googleFonts.json"
     private let fontsFolder = "fonts"
+    private let nameDictionaryFile = "nameDictionary.plist"
 
     /// The URL to Google Fonts metadata file.
     var metadataURL: URL {
@@ -47,6 +48,17 @@ final class Storage {
             return documentURL
                 .appendingPathComponent(domain, isDirectory: true)
                 .appendingPathComponent(fontsFolder, isDirectory: true)
+        }
+    }
+
+    /// The URL to name dictionary file.
+    var nameDictionaryURL: URL {
+        get {
+            let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+
+            return documentURL
+                .appendingPathComponent(domain, isDirectory: true)
+                .appendingPathComponent(nameDictionaryFile)
         }
     }
 }
