@@ -1,5 +1,5 @@
 //
-//  NameDictionary.swift
+//  FontRegister.swift
 //  Inkwell
 //
 // Copyright (c) 2017 Vinh Nguyen
@@ -25,40 +25,30 @@
 
 import Foundation
 
-final class NameDictionary {
+final class FontRegister {
     private let storage: Storage
 
     init(storage: Storage) {
         self.storage = storage
     }
 
-    /// Get the postscript name of specified font.
-    ///
-    /// - Parameter font: The font needed to get the postscript name.
-    /// - Returns: The postscript name.
-    func postscriptName(for font: Font) -> String? {
-        guard let nameDictionary = NSDictionary(contentsOf: storage.nameDictionaryURL) else {
-            return nil
+
+    func register(_ _font: Font) -> Bool {
+        guard let data = try? Data(contentsOf: storage.URL(for: _font)),
+            let provider = CGDataProvider(data: data as CFData) else {
+                return false
         }
 
-        return nameDictionary.value(forKey: font.name) as? String
-    }
+        let font = CGFont(provider)
 
-    /// Set the postscript name of specified font.
-    ///
-    /// - Parameters:
-    ///   - name: The postscript name.
-    ///   - font: The font needed to get the postscript name.
-    /// - Returns: `true` if set successfully, otherwise `false`.
-    @discardableResult func setPostscriptName(_ name: String, for font: Font) -> Bool {
-        let URL = storage.nameDictionaryURL
+        guard CTFontManagerRegisterGraphicsFont(font, nil) else { return false }
+        guard let postscriptName = font.postScriptName as? String,
+            NameDictionary(storage: storage).setPostscriptName(postscriptName, for: _font) else {
+                CTFontManagerUnregisterGraphicsFont(font, nil)
 
-        guard let nameDictionary = NSMutableDictionary(contentsOf: URL) else {
-            return false
+                return false
         }
-
-        nameDictionary.setValue(name, forKey: font.name)
-
-        return nameDictionary.write(to: URL, atomically: true)
+        
+        return true
     }
 }
