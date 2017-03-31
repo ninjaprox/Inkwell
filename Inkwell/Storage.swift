@@ -61,4 +61,29 @@ final class Storage {
                 .appendingPathComponent(nameDictionaryFile)
         }
     }
+
+    /// Check if the file of specified font exists.
+    ///
+    /// - Parameter font: The font needed to check its file.
+    /// - Returns: `true` if the file exists, otherwise `false`.
+    func fileExists(for font: Font) -> Bool {
+        let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let fontURL = documentURL
+            .appendingPathComponent(domain, isDirectory: true)
+            .appendingPathComponent(fontsFolder, isDirectory: true)
+            .appendingPathComponent("\(font.filename)")
+
+        return FileManager.default.fileExists(atPath: fontURL.path)
+    }
+
+    /// Check if the Google Fonts metadata file exists.
+    ///
+    /// - Returns: `true` if the file exists, otherwised `false`.
+    func googleFontsMetadataExists() -> Bool {
+        return FileManager.default.fileExists(atPath: metadataURL.path)
+    }
+
+    func URL(for font: Font) -> URL {
+        return fontsURL.appendingPathComponent("\(font.filename)")
+    }
 }

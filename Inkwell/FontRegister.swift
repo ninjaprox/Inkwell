@@ -33,7 +33,7 @@ final class FontRegister {
     }
 
 
-    func register(_ _font: Font) -> Bool {
+    @discardableResult func register(_ _font: Font) -> Bool {
         guard let data = try? Data(contentsOf: storage.URL(for: _font)),
             let provider = CGDataProvider(data: data as CFData) else {
                 return false
