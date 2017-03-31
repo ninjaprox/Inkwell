@@ -47,6 +47,33 @@ final class GoogleFontsMetadata {
                                    headers: nil,
                                    to: destination)
     }
+
+    /// Get font families from persisted Google Fonts metadata files.
+    ///
+    /// - Returns: The list of font families.
+    func families() -> [Family] {
+        guard let data = try? Data(contentsOf: storage.metadataURL),
+            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
+            let itemsJson = json?["items"] as? [[String: Any]] else {
+                return []
+        }
+
+        return itemsJson.flatMap {
+            return Family(json: $0, variants: [.regular, ._700, .italic, ._700italic])
+        }
+    }
+
+    /// Get files in the family of specified font.
+    ///
+    /// - Parameter font: The font.
+    /// - Returns: The list of files.
+    func files(of font: Font) -> [String] {
+        guard let family = families().first(where: { $0.name == font.family }) else {
+            return []
+        }
+
+        return family.files
+    }
 }
 
 extension GoogleFontsMetadata {

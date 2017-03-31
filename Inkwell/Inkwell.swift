@@ -56,8 +56,18 @@ public final class Inkwell {
             postscriptName = nameDictionary.postscriptName(for: _font) ?? ""
 
             return UIFont(name: postscriptName, size: size) ?? UIFont.systemFont(ofSize: size)
-        } else {
-            
+        } else if storage.googleFontsMetadataExists() {
+            let files = GoogleFontsMetadata(APIKey: APIKey, storage: storage).files(of: _font)
+            let fontDownloader = FontDownloader(storage: storage)
+            let fontRegister = FontRegister(storage: storage)
+
+            for file in files {
+                fontDownloader.download(_font, at: URL(string: file)!)
+            }
+            fontRegister.register(_font)
+            postscriptName = nameDictionary.postscriptName(for: _font) ?? ""
+
+            return UIFont(name: postscriptName, size: size) ?? UIFont.systemFont(ofSize: size)
         }
 
 
