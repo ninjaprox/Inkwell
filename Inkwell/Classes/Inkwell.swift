@@ -88,7 +88,7 @@ public final class Inkwell {
 
     // MARK: Helpers
 
-    func fetchGoogleFontsMetadata(completion: @escaping (Result<[GoogleFontsMetadata.Family]>) -> Void) {
+    func fetchGoogleFontsMetadata(completion: @escaping (Result<GoogleFontsMetadata.FamilyDictionary>) -> Void) {
         _ = googleFontsMetadata.fetch(completion: completion)
     }
 

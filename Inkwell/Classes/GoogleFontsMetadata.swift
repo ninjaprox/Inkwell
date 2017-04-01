@@ -25,12 +25,15 @@
 
 import Alamofire
 
+/// The class to work Google Fonts API.
+/// This class is used to fetch Google Fonts metadata, i.e. list of fonts supported by Google Fonts.
+/// The metadata can be downloaded if no persisted file found or load locally.
 final class GoogleFontsMetadata {
     typealias JSON = [String: Any]
     typealias ItemsJSON = [ItemJSON]
     typealias ItemJSON = [String: Any]
     typealias FilesJSON = [String: String]
-    typealias Families = [String: [String]]
+    typealias FamilyDictionary = [String: [String]]
 
     private let APIEndpoint = "https://www.googleapis.com/webfonts/v1/webfonts"
     private let APIKey: String
@@ -41,8 +44,13 @@ final class GoogleFontsMetadata {
         self.storage = storage
     }
 
+    // MARK: - Interface
+
     /// Fetch the Google Fonts metadata.
-    func fetch(completion: @escaping (Result<[Family]>) -> Void) -> DownloadRequest {
+    ///
+    /// - Parameter completion: The completion handler.
+    /// - Returns: The download request.
+    func fetch(completion: @escaping (Result<FamilyDictionary>) -> Void) -> DownloadRequest {
         let destination: DownloadRequest.DownloadFileDestination = { _, _ in
             return (self.storage.metadataURL, [.removePreviousFile, .createIntermediateDirectories])
         }
@@ -54,8 +62,8 @@ final class GoogleFontsMetadata {
                                   headers: nil,
                                   to: destination)
             .responseJSON { response in
-                let familyResponse = response.flatMap { json -> [Family] in
-                    guard let json = json as? JSON else { return [] }
+                let familyResponse = response.flatMap { json -> FamilyDictionary in
+                    guard let json = json as? JSON else { return [:] }
 
                     return self.parse(json: json)
                 }
@@ -67,14 +75,14 @@ final class GoogleFontsMetadata {
         }
     }
 
-    /// Get font families from persisted Google Fonts metadata files.
+    /// Get the family dictionary from persisted Google Fonts metadata files.
     ///
-    /// - Returns: The list of font families.
-    func families() -> [Family] {
+    /// - Returns: The family dictionary.
+    func familyDictionary() -> FamilyDictionary {
         guard let data = try? Data(contentsOf: storage.metadataURL),
             let optionalJson = try? JSONSerialization.jsonObject(with: data, options: .allowFragments),
             let json = optionalJson as? JSON else {
-                return []
+                return [:]
         }
 
         return parse(json: json)
@@ -85,69 +93,51 @@ final class GoogleFontsMetadata {
     /// - Parameter font: The font.
     /// - Returns: The list of files.
     func files(of font: Font) -> [String] {
-        guard let family = families().first(where: { $0.name == font.family }) else {
+        guard let files = familyDictionary()[font.family] else {
             return []
         }
 
-        return family.files
+        return files
+    }
+
+    func exist() -> Bool {
+        return storage.googleFontsMetadataExists()
     }
 
     // MARK: - Helpers
 
-    func parse(json: JSON) -> [Family] {
-        guard let items = json["items"] as? ItemsJSON else {
-            return []
-        }
-
-        return items.flatMap {
-            return Family(json: $0, variants: [.regular, ._700, .italic, ._700italic])
-        }
-    }
-
-    func parse2(json: JSON, variants: [Font.Variant]? = [.regular, ._700, .italic, ._700italic]) -> Families {
+    /// Parse the JSON to the family dictionary.
+    ///
+    /// - Note: Only concerned variants are taken.
+    ///
+    /// - Parameters:
+    ///   - json: The JSON.
+    ///   - variants: Concerned variants.
+    /// - Returns: The family dictionary.
+    private func parse(json: JSON,
+                       variants: [Font.Variant]? = [.regular, ._700, .italic, ._700italic]) -> FamilyDictionary {
         guard let items = json["items"] as? ItemsJSON else {
             return [:]
         }
 
         return items.reduce([:]) { result, item in
-            guard let item = item as? ItemJSON,
-                let family = item["family"] as? String,
+            guard let family = item["family"] as? String,
                 let files = item["files"] as? FilesJSON else {
                     return result
             }
 
+            let variants = variants?.map { $0.rawValue }
             var result = result
 
             result[family] = files.flatMap { (key, value) in
-                if let variants = variants?.map({ $0.rawValue }) {
+                if let variants = variants {
                     return variants.contains(key) ? value : nil
                 } else {
                     return value
                 }
             }
-
+            
             return result
-        }
-    }
-}
-
-extension GoogleFontsMetadata {
-    struct Family {
-        let name: String
-        let files: [String]
-
-        init?(json: ItemJSON, variants: [Font.Variant]?) {
-            guard let files = json["files"] as? FilesJSON else { return nil }
-            guard let name = json["family"] as? String else { return nil }
-
-            self.name = name
-            self.files = files.flatMap { (key, value) in
-                if let variants = variants?.map({ $0.rawValue }) {
-                    return variants.contains(key) ? value : nil
-                } else {
-                    return value
-                }
-            }
         }
     }
 }
