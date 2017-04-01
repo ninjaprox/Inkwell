@@ -29,7 +29,11 @@ public final class Inkwell {
     public static let shared = Inkwell()
 
     /// The Google API key used for Google Fonts.
-    public var APIKey: String = ""
+    public var APIKey: String = "" {
+        didSet {
+            googleFontsMetadata.APIKey = APIKey
+        }
+    }
 
     private let storage = Storage()
     private let nameDictionary: NameDictionary
@@ -48,41 +52,26 @@ public final class Inkwell {
 
     // MARK: - Public interface
 
-    public func font(for _font: Font, size: CGFloat) -> UIFont {
-        var postscriptName = nameDictionary.postscriptName(for: _font) ?? ""
-        let font = UIFont(name: postscriptName, size: size)
-
-        guard font == nil else {
-            return font!
+    public func font(for font: Font, size: CGFloat, completion: @escaping (UIFont) -> Void) {
+        if case let (uifont, false) = createFont(for: font, size: size) {
+            completion(uifont)
         }
 
-        if storage.fileExists(for: _font) {
-            fontRegister.register(_font)
-
-            postscriptName = nameDictionary.postscriptName(for: _font) ?? ""
-
-            return UIFont(name: postscriptName, size: size) ?? UIFont.systemFont(ofSize: size)
-        } else if storage.googleFontsMetadataExists() {
-            let files = googleFontsMetadata.files(of: _font)
-
-            for file in files {
-                fontDownloader.download(_font, at: URL(string: file)!)
+        if storage.fileExists(for: font) {
+            register(font)
+            completion(createFont(for: font, size: size).font)
+        } else if googleFontsMetadata.exist() {
+            download(font) { _ in
+                self.register(font)
+                completion(self.createFont(for: font, size: size).font)
             }
-            fontRegister.register(_font)
-            postscriptName = nameDictionary.postscriptName(for: _font) ?? ""
-
-            return UIFont(name: postscriptName, size: size) ?? UIFont.systemFont(ofSize: size)
         } else {
-            fetchGoogleFontsMetadata { _ in }
-            let files = googleFontsMetadata.files(of: _font)
-
-            for file in files {
-                fontDownloader.download(_font, at: URL(string: file)!)
+            fetchGoogleFontsMetadata { _ in
+                self.download(font) { _ in
+                    self.register(font)
+                    completion(self.createFont(for: font, size: size).font)
+                }
             }
-            fontRegister.register(_font)
-            postscriptName = nameDictionary.postscriptName(for: _font) ?? ""
-
-            return UIFont(name: postscriptName, size: size) ?? UIFont.systemFont(ofSize: size)
         }
     }
 
@@ -92,15 +81,27 @@ public final class Inkwell {
         _ = googleFontsMetadata.fetch(completion: completion)
     }
 
-    func downloadFontFiles(_ files: String) {
-        
+    func download(_ font: Font, completion: @escaping (Result<URL>) -> Void) {
+        guard let file = googleFontsMetadata.file(of: font),
+            let URL = URL(string: file) else {
+                completion(.failure(nil))
+
+                return
+        }
+
+        _ = fontDownloader.download(font, at: URL, completion: completion)
     }
-    
-    func registerFont(_ font: Font) {
-        
+
+    func register(_ font: Font) {
+        fontRegister.register(font)
     }
-    
-    func setPostScriptName(for font: Font) {
+
+    func createFont(for font: Font, size: CGFloat) -> (font: UIFont, fallback: Bool) {
+        guard let postscriptName = nameDictionary.postscriptName(for: font),
+            let uifont = UIFont(name: postscriptName, size: size) else {
+                return (UIFont.systemFont(ofSize: size), true)
+        }
         
+        return (uifont, false)
     }
 }

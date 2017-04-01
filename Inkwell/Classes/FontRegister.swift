@@ -24,6 +24,7 @@
 //
 
 import Foundation
+import CoreText
 
 /// The class to register font.
 final class FontRegister {
@@ -35,20 +36,20 @@ final class FontRegister {
 
     /// Register the font.
     ///
-    /// - Parameter _font: The font.
+    /// - Parameter font: The font.
     /// - Returns: `true` if successful, otherwise `false.
-    @discardableResult func register(_ _font: Font) -> Bool {
-        guard let data = try? Data(contentsOf: storage.URL(for: _font)),
+    @discardableResult func register(_ font: Font) -> Bool {
+        guard let data = try? Data(contentsOf: storage.URL(for: font)),
             let provider = CGDataProvider(data: data as CFData) else {
                 return false
         }
 
-        let font = CGFont(provider)
+        let cgfont = CGFont(provider)
 
-        guard CTFontManagerRegisterGraphicsFont(font, nil) else { return false }
-        guard let postscriptName = font.postScriptName as String?,
-            NameDictionary(storage: storage).setPostscriptName(postscriptName, for: _font) else {
-                CTFontManagerUnregisterGraphicsFont(font, nil)
+        guard CTFontManagerRegisterGraphicsFont(cgfont, nil) else { return false }
+        guard let postscriptName = cgfont.postScriptName as String?,
+            NameDictionary(storage: storage).setPostscriptName(postscriptName, for: font) else {
+                CTFontManagerUnregisterGraphicsFont(cgfont, nil)
 
                 return false
         }

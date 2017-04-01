@@ -52,10 +52,7 @@ final class NameDictionary {
     /// - Returns: `true` if set successfully, otherwise `false`.
     @discardableResult func setPostscriptName(_ name: String, for font: Font) -> Bool {
         let URL = storage.nameDictionaryURL
-
-        guard let nameDictionary = NSMutableDictionary(contentsOf: URL) else {
-            return false
-        }
+        let nameDictionary = NSMutableDictionary(contentsOf: URL) ?? NSMutableDictionary(capacity: 1)
 
         nameDictionary.setValue(name, forKey: font.name)
 

@@ -35,8 +35,8 @@ final class GoogleFontsMetadata {
     typealias FilesJSON = [String: String]
     typealias FamilyDictionary = [String: [String]]
 
+    var APIKey: String
     private let APIEndpoint = "https://www.googleapis.com/webfonts/v1/webfonts"
-    private let APIKey: String
     private let storage: Storage
 
     init(APIKey: String, storage: Storage) {
@@ -88,16 +88,19 @@ final class GoogleFontsMetadata {
         return parse(json: json)
     }
 
-    /// Get files in the family of specified font.
+    /// Get the file of specified font.
     ///
-    /// - Parameter font: The font.
-    /// - Returns: The list of files.
-    func files(of font: Font) -> [String] {
+    /// - Parameter font: The font needed to get the file.
+    /// - Returns: The file.
+    func file(of font: Font) -> String? {
         guard let files = familyDictionary()[font.family] else {
-            return []
+            return nil
+        }
+        guard let index = files.index(where: { $0.hasSuffix(font.variant.rawValue) }) else {
+            return nil
         }
 
-        return files
+        return files[index]
     }
 
     func exist() -> Bool {
@@ -131,7 +134,7 @@ final class GoogleFontsMetadata {
 
             result[family] = files.flatMap { (key, value) in
                 if let variants = variants {
-                    return variants.contains(key) ? value : nil
+                    return variants.contains(key) ? value.appending("#\(key)") : nil
                 } else {
                     return value
                 }
