@@ -26,6 +26,12 @@
 import Alamofire
 
 final class GoogleFontsMetadata {
+    typealias JSON = [String: Any]
+    typealias ItemsJSON = [ItemJSON]
+    typealias ItemJSON = [String: Any]
+    typealias FilesJSON = [String: String]
+    typealias Families = [String: [String]]
+
     private let APIEndpoint = "https://www.googleapis.com/webfonts/v1/webfonts"
     private let APIKey: String
     private let storage: Storage
@@ -36,16 +42,29 @@ final class GoogleFontsMetadata {
     }
 
     /// Fetch the Google Fonts metadata.
-    func fetch() {
+    func fetch(completion: @escaping (Result<[Family]>) -> Void) -> DownloadRequest {
         let destination: DownloadRequest.DownloadFileDestination = { _, _ in
             return (self.storage.metadataURL, [.removePreviousFile, .createIntermediateDirectories])
         }
-        let _ = Alamofire.download(APIEndpoint,
-                                   method: .get,
-                                   parameters: ["key": APIKey],
-                                   encoding: URLEncoding.queryString,
-                                   headers: nil,
-                                   to: destination)
+
+        return Alamofire.download(APIEndpoint,
+                                  method: .get,
+                                  parameters: ["key": APIKey],
+                                  encoding: URLEncoding.queryString,
+                                  headers: nil,
+                                  to: destination)
+            .responseJSON { response in
+                let familyResponse = response.flatMap { json -> [Family] in
+                    guard let json = json as? JSON else { return [] }
+
+                    return self.parse(json: json)
+                }
+
+                switch familyResponse.result {
+                case .success(let value): completion(.success(value))
+                case .failure(let error): completion(.failure(error))
+                }
+        }
     }
 
     /// Get font families from persisted Google Fonts metadata files.
@@ -53,14 +72,12 @@ final class GoogleFontsMetadata {
     /// - Returns: The list of font families.
     func families() -> [Family] {
         guard let data = try? Data(contentsOf: storage.metadataURL),
-            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
-            let itemsJson = json?["items"] as? [[String: Any]] else {
+            let optionalJson = try? JSONSerialization.jsonObject(with: data, options: .allowFragments),
+            let json = optionalJson as? JSON else {
                 return []
         }
 
-        return itemsJson.flatMap {
-            return Family(json: $0, variants: [.regular, ._700, .italic, ._700italic])
-        }
+        return parse(json: json)
     }
 
     /// Get files in the family of specified font.
@@ -74,6 +91,44 @@ final class GoogleFontsMetadata {
 
         return family.files
     }
+
+    // MARK: - Helpers
+
+    func parse(json: JSON) -> [Family] {
+        guard let items = json["items"] as? ItemsJSON else {
+            return []
+        }
+
+        return items.flatMap {
+            return Family(json: $0, variants: [.regular, ._700, .italic, ._700italic])
+        }
+    }
+
+    func parse2(json: JSON, variants: [Font.Variant]? = [.regular, ._700, .italic, ._700italic]) -> Families {
+        guard let items = json["items"] as? ItemsJSON else {
+            return [:]
+        }
+
+        return items.reduce([:]) { result, item in
+            guard let item = item as? ItemJSON,
+                let family = item["family"] as? String,
+                let files = item["files"] as? FilesJSON else {
+                    return result
+            }
+
+            var result = result
+
+            result[family] = files.flatMap { (key, value) in
+                if let variants = variants?.map({ $0.rawValue }) {
+                    return variants.contains(key) ? value : nil
+                } else {
+                    return value
+                }
+            }
+
+            return result
+        }
+    }
 }
 
 extension GoogleFontsMetadata {
@@ -81,8 +136,8 @@ extension GoogleFontsMetadata {
         let name: String
         let files: [String]
 
-        init?(json: [String: Any], variants: [Font.Variant]?) {
-            guard let files = json["files"] as? [String: String] else { return nil }
+        init?(json: ItemJSON, variants: [Font.Variant]?) {
+            guard let files = json["files"] as? FilesJSON else { return nil }
             guard let name = json["family"] as? String else { return nil }
 
             self.name = name
