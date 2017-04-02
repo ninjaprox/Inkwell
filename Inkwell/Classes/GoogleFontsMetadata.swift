@@ -64,6 +64,8 @@ final class GoogleFontsMetadata {
                                   headers: nil,
                                   to: destination)
             .responseJSON(queue: queue, options: .allowFragments) { response in
+                debugPrint("fetched Google Fonts metadata")
+
                 let familyResponse = response.flatMap { json -> FamilyDictionary in
                     guard let json = json as? JSON else { return [:] }
 
@@ -95,6 +97,8 @@ final class GoogleFontsMetadata {
     /// - Parameter font: The font needed to get the file.
     /// - Returns: The file.
     func file(of font: Font) -> String? {
+        debugPrint("file(of:)")
+
         guard let files = familyDictionary()[font.family] else {
             return nil
         }
@@ -106,6 +110,8 @@ final class GoogleFontsMetadata {
     }
 
     func exist() -> Bool {
+        debugPrint("exist()")
+
         return storage.googleFontsMetadataExists()
     }
 
