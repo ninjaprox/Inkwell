@@ -28,9 +28,11 @@ import Alamofire
 /// The class to download font.
 final class FontDownloader {
     private let storage: Storage
+    private let queue: DispatchQueue?
 
-    init(storage: Storage) {
+    init(storage: Storage, queue: DispatchQueue?) {
         self.storage = storage
+        self.queue = queue
     }
 
     /// Download the font at specified URL.
@@ -47,7 +49,7 @@ final class FontDownloader {
         }
 
         return Alamofire.download(URL, to: destination)
-            .response { response in
+            .response(queue: queue) { response in
                 if let error = response.error {
                     completion(.failure(error))
                 } else {

@@ -40,68 +40,36 @@ public final class Inkwell {
     private let fontRegister: FontRegister
     private let fontDownloader: FontDownloader
     private let googleFontsMetadata: GoogleFontsMetadata
+    private let operationQueue = OperationQueue()
 
     // MARK: - Init
 
     private init() {
+        operationQueue.name = "me.vinhis.Inkwell"
+        operationQueue.maxConcurrentOperationCount = 1
+        operationQueue.qualityOfService = .utility
+
         nameDictionary = NameDictionary(storage: storage)
         fontRegister = FontRegister(storage: storage)
-        fontDownloader = FontDownloader(storage: storage)
-        googleFontsMetadata = GoogleFontsMetadata(APIKey: APIKey, storage: storage)
+        fontDownloader = FontDownloader(storage: storage, queue: operationQueue.underlyingQueue)
+        googleFontsMetadata = GoogleFontsMetadata(APIKey: APIKey, storage: storage, queue: operationQueue.underlyingQueue)
     }
 
     // MARK: - Public interface
 
     public func font(for font: Font, size: CGFloat, completion: @escaping (UIFont) -> Void) {
-        if case let (uifont, false) = createFont(for: font, size: size) {
-            completion(uifont)
+        let operation = FontOperation(storage: storage,
+                                      nameDictionary: nameDictionary,
+                                      fontRegister: fontRegister,
+                                      fontDownloader: fontDownloader,
+                                      googleFontsMetadata: googleFontsMetadata,
+                                      font: font,
+                                      size: size) { uifont in
+                                        DispatchQueue.main.async {
+                                            completion(uifont)
+                                        }
         }
 
-        if storage.fileExists(for: font) {
-            register(font)
-            completion(createFont(for: font, size: size).font)
-        } else if googleFontsMetadata.exist() {
-            download(font) { _ in
-                self.register(font)
-                completion(self.createFont(for: font, size: size).font)
-            }
-        } else {
-            fetchGoogleFontsMetadata { _ in
-                self.download(font) { _ in
-                    self.register(font)
-                    completion(self.createFont(for: font, size: size).font)
-                }
-            }
-        }
-    }
-
-    // MARK: Helpers
-
-    func fetchGoogleFontsMetadata(completion: @escaping (Result<GoogleFontsMetadata.FamilyDictionary>) -> Void) {
-        _ = googleFontsMetadata.fetch(completion: completion)
-    }
-
-    func download(_ font: Font, completion: @escaping (Result<URL>) -> Void) {
-        guard let file = googleFontsMetadata.file(of: font),
-            let URL = URL(string: file) else {
-                completion(.failure(nil))
-
-                return
-        }
-
-        _ = fontDownloader.download(font, at: URL, completion: completion)
-    }
-
-    func register(_ font: Font) {
-        fontRegister.register(font)
-    }
-
-    func createFont(for font: Font, size: CGFloat) -> (font: UIFont, fallback: Bool) {
-        guard let postscriptName = nameDictionary.postscriptName(for: font),
-            let uifont = UIFont(name: postscriptName, size: size) else {
-                return (UIFont.systemFont(ofSize: size), true)
-        }
-        
-        return (uifont, false)
+        operationQueue.addOperation(operation)
     }
 }

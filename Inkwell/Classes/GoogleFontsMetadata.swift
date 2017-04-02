@@ -38,10 +38,12 @@ final class GoogleFontsMetadata {
     var APIKey: String
     private let APIEndpoint = "https://www.googleapis.com/webfonts/v1/webfonts"
     private let storage: Storage
+    private let queue: DispatchQueue?
 
-    init(APIKey: String, storage: Storage) {
+    init(APIKey: String, storage: Storage, queue: DispatchQueue?) {
         self.APIKey = APIKey
         self.storage = storage
+        self.queue = queue
     }
 
     // MARK: - Interface
@@ -61,7 +63,7 @@ final class GoogleFontsMetadata {
                                   encoding: URLEncoding.queryString,
                                   headers: nil,
                                   to: destination)
-            .responseJSON { response in
+            .responseJSON(queue: queue, options: .allowFragments) { response in
                 let familyResponse = response.flatMap { json -> FamilyDictionary in
                     guard let json = json as? JSON else { return [:] }
 
