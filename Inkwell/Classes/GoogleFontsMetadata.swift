@@ -63,6 +63,8 @@ final class GoogleFontsMetadata {
                                   encoding: URLEncoding.queryString,
                                   headers: nil,
                                   to: destination)
+            .validate(statusCode: 200..<300)
+            .validate(contentType: ["application/json"])
             .responseJSON(queue: queue, options: .allowFragments) { response in
                 debugPrint("fetched Google Fonts metadata")
 
@@ -74,12 +76,14 @@ final class GoogleFontsMetadata {
 
                 switch familyResponse.result {
                 case .success(let value): completion(.success(value))
-                case .failure(let error): completion(.failure(error))
+                case .failure(let error):
+                    self.storage.removeGoogleFontsMetadata()
+                    completion(.failure(error))
                 }
         }
     }
 
-    /// Get the family dictionary from persisted Google Fonts metadata files.
+    /// Get the family dictionary from persisted Google Fonts metadata file.
     ///
     /// - Returns: The family dictionary.
     func familyDictionary() -> FamilyDictionary {
@@ -94,21 +98,24 @@ final class GoogleFontsMetadata {
 
     /// Get the file of specified font.
     ///
-    /// - Parameter font: The font needed to get the file.
+    /// - Parameters:
+    ///   - font: The font needed to get the file.
+    ///   - familyDictionary: The family dictionary to look up the file.
     /// - Returns: The file.
-    func file(of font: Font) -> String? {
-        debugPrint("file(of:)")
+    func file(of font: Font, familyDictionary: FamilyDictionary?) -> String? {
+        let familyDictionary = familyDictionary ?? self.familyDictionary()
 
-        guard let files = familyDictionary()[font.family] else {
-            return nil
-        }
-        guard let index = files.index(where: { $0.hasSuffix(font.variant.rawValue) }) else {
-            return nil
+        guard let files = familyDictionary[font.family],
+            let index = files.index(where: { $0.hasSuffix(font.variant.rawValue) }) else {
+                return nil
         }
 
         return files[index]
     }
 
+    /// Check if the Google Fonts metadata file exists.
+    ///
+    /// - Returns: `true` if existing, otherwise `false`.
     func exist() -> Bool {
         debugPrint("exist()")
 

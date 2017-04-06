@@ -86,4 +86,8 @@ final class Storage {
     func URL(for font: Font) -> URL {
         return fontsURL.appendingPathComponent("\(font.filename)")
     }
+
+    func removeGoogleFontsMetadata() {
+        try? FileManager.default.removeItem(at: metadataURL)
+    }
 }

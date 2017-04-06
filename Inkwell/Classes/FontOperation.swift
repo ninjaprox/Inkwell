@@ -96,15 +96,29 @@ final class FontOperation: Operation {
             register(font)
             finish()
         } else if self.googleFontsMetadata.exist() {
-            download(font) { _ in
-                self.register(self.font)
-                self.finish()
-            }
-        } else {
-            fetchGoogleFontsMetadata { _ in
-                self.download(self.font) { _ in
+            download(font, familyDictionary: nil) { result in
+                switch result {
+                case .success:
                     self.register(self.font)
                     self.finish()
+                case .failure:
+                    self.fail()
+                }
+            }
+        } else {
+            fetchGoogleFontsMetadata { fetchResult in
+                switch fetchResult {
+                case .success(let familyDictionary):
+                    self.download(self.font, familyDictionary: familyDictionary) { downloadResult in
+                        switch downloadResult {
+                        case .success:
+                            self.register(self.font)
+                            self.finish()
+                        case .failure:
+                            self.fail()
+                        }
+                    }
+                case .failure: self.fail()
                 }
             }
         }
@@ -116,8 +130,10 @@ final class FontOperation: Operation {
         _ = googleFontsMetadata.fetch(completion: completion)
     }
 
-    private func download(_ font: Font, completion: @escaping (Result<URL>) -> Void) {
-        guard let file = googleFontsMetadata.file(of: font),
+    private func download(_ font: Font,
+                          familyDictionary: GoogleFontsMetadata.FamilyDictionary?,
+                          completion: @escaping (Result<URL>) -> Void) {
+        guard let file = googleFontsMetadata.file(of: font, familyDictionary: familyDictionary),
             let URL = URL(string: file) else {
                 completion(.failure(nil))
 
@@ -139,7 +155,15 @@ final class FontOperation: Operation {
             !isCancelled else {
                 return
         }
-        
+
         completion(uifont)
+    }
+
+    private func fail() {
+        isExecuting = false
+        isFinished = true
+        guard !isCancelled else { return }
+        
+        completion(nil)
     }
 }
