@@ -26,9 +26,8 @@
 import Foundation
 
 final class FontOperation: Operation {
-    typealias Completion = (UIFont) -> Void
+    typealias Completion = (UIFont?) -> Void
 
-    private var uifont: UIFont
     private let storage: Storage
     private let nameDictionary: NameDictionary
     private let fontRegister: FontRegister
@@ -48,7 +47,6 @@ final class FontOperation: Operation {
          font: Font,
          size: CGFloat,
          completion: @escaping Completion) {
-        uifont = UIFont.systemFont(ofSize: size)
         self.storage = storage
         self.nameDictionary = nameDictionary
         self.fontRegister = fontRegister
@@ -136,12 +134,12 @@ final class FontOperation: Operation {
     private func finish(isCancelled: Bool = false) {
         isExecuting = false
         isFinished = true
-        if let postscriptName = nameDictionary.postscriptName(for: font),
-            let _uifont = UIFont(name: postscriptName, size: size) {
-            uifont = _uifont
+        guard let postscriptName = nameDictionary.postscriptName(for: font),
+            let uifont = UIFont(name: postscriptName, size: size),
+            !isCancelled else {
+                return
         }
-        if !isCancelled {
-            completion(uifont)
-        }
+        
+        completion(uifont)
     }
 }

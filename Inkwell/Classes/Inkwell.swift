@@ -57,7 +57,7 @@ public final class Inkwell {
 
     // MARK: - Public interface
 
-    public func font(for font: Font, size: CGFloat, completion: @escaping (UIFont) -> Void) {
+    public func font(for font: Font, size: CGFloat, completion: @escaping (UIFont?) -> Void) {
         let operation = FontOperation(storage: storage,
                                       nameDictionary: nameDictionary,
                                       fontRegister: fontRegister,
