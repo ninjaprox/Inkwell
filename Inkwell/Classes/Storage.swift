@@ -30,46 +30,33 @@ final class Storage {
     private let nameDictionaryFile = "nameDictionary.plist"
 
     /// The URL to Google Fonts metadata file.
-    var metadataURL: URL {
-        get {
-            let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-
-            return documentURL
-                .appendingPathComponent(domain, isDirectory: true)
-                .appendingPathComponent(metadataFile)
-        }
-    }
+    lazy var metadataURL: URL = {
+        return self.domainURL.appendingPathComponent(self.metadataFile)
+    }()
 
     /// The URL to fonts folder.
-    var fontsURL: URL {
-        get {
-            let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-
-            return documentURL
-                .appendingPathComponent(domain, isDirectory: true)
-                .appendingPathComponent(fontsFolder, isDirectory: true)
-        }
-    }
+    lazy var fontsURL: URL = {
+        return self.domainURL.appendingPathComponent(self.fontsFolder, isDirectory: true)
+    }()
 
     /// The URL to name dictionary file.
-    var nameDictionaryURL: URL {
-        get {
-            let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    lazy var nameDictionaryURL: URL = {
+        return self.domainURL.appendingPathComponent(self.nameDictionaryFile)
+    }()
 
-            return documentURL
-                .appendingPathComponent(domain, isDirectory: true)
-                .appendingPathComponent(nameDictionaryFile)
-        }
-    }
+    private lazy var domainURL: URL = {
+        let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+
+        return documentURL
+            .appendingPathComponent(self.domain, isDirectory: true)
+    }()
 
     /// Check if the file of specified font exists.
     ///
     /// - Parameter font: The font needed to check its file.
     /// - Returns: `true` if the file exists, otherwise `false`.
     func fileExists(for font: Font) -> Bool {
-        let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let fontURL = documentURL
-            .appendingPathComponent(domain, isDirectory: true)
+        let fontURL = domainURL
             .appendingPathComponent(fontsFolder, isDirectory: true)
             .appendingPathComponent("\(font.filename)")
 
