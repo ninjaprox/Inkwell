@@ -39,6 +39,11 @@ final class GoogleFontsMetadata {
     private let APIEndpoint = "https://www.googleapis.com/webfonts/v1/webfonts"
     private let storage: Storage
     private let queue: DispatchQueue?
+    private let defaultVariantFilter: (String) -> Bool = {
+        let variants: [Font.Variant] = [.regular, ._700, .italic, ._700italic]
+
+        return variants.map { $0.rawValue }.contains($0)
+    }
 
     init(APIKey: String, storage: Storage, queue: DispatchQueue?) {
         self.APIKey = APIKey
@@ -71,7 +76,7 @@ final class GoogleFontsMetadata {
                 let familyResponse = response.flatMap { json -> FamilyDictionary in
                     guard let json = json as? JSON else { return [:] }
 
-                    return self.parse(json: json)
+                    return self.parse(json: json, variantFilter: self.defaultVariantFilter)
                 }
 
                 switch familyResponse.result {
@@ -93,7 +98,7 @@ final class GoogleFontsMetadata {
                 return [:]
         }
 
-        return parse(json: json)
+        return parse(json: json, variantFilter: defaultVariantFilter)
     }
 
     /// Get the file of specified font.
@@ -130,10 +135,9 @@ final class GoogleFontsMetadata {
     ///
     /// - Parameters:
     ///   - json: The JSON.
-    ///   - variants: Concerned variants.
+    ///   - variantFilter: The variant filter.
     /// - Returns: The family dictionary.
-    private func parse(json: JSON,
-                       variants: [Font.Variant]? = [.regular, ._700, .italic, ._700italic]) -> FamilyDictionary {
+    private func parse(json: JSON, variantFilter: ((String) -> Bool)) -> FamilyDictionary {
         guard let items = json["items"] as? ItemsJSON else {
             return [:]
         }
@@ -144,15 +148,10 @@ final class GoogleFontsMetadata {
                     return result
             }
 
-            let variants = variants?.map { $0.rawValue }
             var result = result
 
             result[family] = files.flatMap { (key, value) in
-                if let variants = variants {
-                    return variants.contains(key) ? value.appending("#\(key)") : nil
-                } else {
-                    return value
-                }
+                return variantFilter(key) ? value.appending("#\(key)") : nil
             }
             
             return result
