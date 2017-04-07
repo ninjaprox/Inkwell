@@ -29,22 +29,25 @@ import XCTest
 class NameDictionaryTests: XCTestCase {
     let storage = Storage()
     var nameDictionary: NameDictionary!
-    
+
     override func setUp() {
         super.setUp()
 
         nameDictionary = NameDictionary(storage: storage)
 
+        try? FileManager.default.createDirectory(at: storage.domainURL, withIntermediateDirectories: true, attributes: nil)
+
         let nameDictionaryContent = NSDictionary(dictionary: ["Arial-regular": "Arial-regular"])
         nameDictionaryContent.write(to: storage.nameDictionaryURL, atomically: true)
     }
-    
+
     override func tearDown() {
         try? FileManager.default.removeItem(atPath: storage.nameDictionaryURL.path)
+        try? FileManager.default.removeItem(atPath: storage.domainURL.path)
 
         super.tearDown()
     }
-    
+
     func test_postscriptName() {
         var font = Font(family: "Arial", variant: .regular)
         var postScriptName = nameDictionary.postscriptName(for: font)

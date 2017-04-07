@@ -44,7 +44,7 @@ final class Storage {
         return self.domainURL.appendingPathComponent(self.nameDictionaryFile)
     }()
 
-    private lazy var domainURL: URL = {
+    lazy var domainURL: URL = {
         let documentURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
         return documentURL

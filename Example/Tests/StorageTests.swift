@@ -35,6 +35,7 @@ class StorageTests: XCTestCase {
         let font = Font(family: "Arial", variant: .regular)
         let fontURL = storage.URL(for: font)
 
+        try? FileManager.default.createDirectory(at: storage.fontsURL, withIntermediateDirectories: true, attributes: nil)
         FileManager.default.createFile(atPath: fontURL.path, contents: nil, attributes: nil)
         FileManager.default.createFile(atPath: storage.metadataURL.path, contents: nil, attributes: nil)
     }
@@ -45,6 +46,8 @@ class StorageTests: XCTestCase {
 
         try? FileManager.default.removeItem(atPath: fontURL.path)
         try? FileManager.default.removeItem(atPath: storage.metadataURL.path)
+        try? FileManager.default.removeItem(atPath: storage.fontsURL.path)
+        try? FileManager.default.removeItem(atPath: storage.domainURL.path)
 
         super.tearDown()
     }
@@ -58,7 +61,7 @@ class StorageTests: XCTestCase {
     func test_fontsURL() {
         let url = storage.fontsURL
 
-        XCTAssertTrue(url.absoluteString.hasSuffix("/me.vinhis.Inkwell/fonts"))
+        XCTAssertTrue(url.absoluteString.hasSuffix("/me.vinhis.Inkwell/fonts/"))
     }
 
     func test_nameDictionaryURL() {

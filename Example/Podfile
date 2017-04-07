@@ -6,6 +6,6 @@ target 'Inkwell_Example' do
   target 'Inkwell_Tests' do
     inherit! :search_paths
 
-    
+    pod 'Inkwell', :path => '../'
   end
 end
