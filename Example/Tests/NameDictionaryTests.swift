@@ -59,6 +59,14 @@ class NameDictionaryTests: XCTestCase {
         XCTAssertNil(postScriptName)
     }
 
+    func test_postscriptName_fileNotFound() {
+        try? FileManager.default.removeItem(atPath: storage.nameDictionaryURL.path)
+
+        let font = Font(family: "Arial", variant: .regular)
+        let postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNil(postScriptName)
+    }
+
     func test_setPostscriptName() {
         let font = Font(family: "Arial", variant: ._700)
         let result = nameDictionary.setPostscriptName("Arial-bold", for: font)
@@ -68,5 +76,16 @@ class NameDictionaryTests: XCTestCase {
         XCTAssertNotNil(postScriptName)
         XCTAssertEqual(postScriptName!, "Arial-bold")
     }
-    
+
+    func test_setPostscriptName_fileNotFound() {
+        try? FileManager.default.removeItem(atPath: storage.nameDictionaryURL.path)
+
+        let font = Font(family: "Arial", variant: ._700)
+        let result = nameDictionary.setPostscriptName("Arial-bold", for: font)
+        let postScriptName = nameDictionary.postscriptName(for: font)
+
+        XCTAssertTrue(result)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName!, "Arial-bold")
+    }
 }
