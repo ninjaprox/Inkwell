@@ -1,14 +1,18 @@
-# references:
-# * http://www.objc.io/issue-6/travis-ci.html
-# * https://github.com/supermarin/xcpretty#usage
-
-osx_image: xcode7.3
 language: objective-c
-# cache: cocoapods
-# podfile: Example/Podfile
-# before_install:
-# - gem install cocoapods # Since Travis is not always on latest version
-# - pod install --project-directory=Example
+cache: cocoapods
+podfile: Example/Podfile
+before_install:
+- gem install -N cocoapods-1.2.0
+- pod install --project-directory=Example
+env:
+  global:
+  - WORKSPACE=Example/Inkwell.xcworkspace
+  - SCHEME=Inkwell-Example
+matrix:
+  include:
+  - osx_image: xcode8.2
+    env: SDK="iphonesimulator10.2" DESTINATION="name=iPhone 6s,OS=10.2"
+  - osx_image: xcode8.3
+    env: SDK="iphonesimulator10.3" DESTINATION="name=iPhone 6s,OS=10.3"
 script:
-- set -o pipefail && xcodebuild test -workspace Example/Inkwell.xcworkspace -scheme Inkwell-Example -sdk iphonesimulator9.3 ONLY_ACTIVE_ARCH=NO | xcpretty
-- pod lib lint
+- set -o pipefail && xcodebuild test -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" ONLY_ACTIVE_ARCH=YES | xcpretty
