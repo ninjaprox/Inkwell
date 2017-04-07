@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1F76CAE51E97F08800D0E837 /* StorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F76CAE41E97F08800D0E837 /* StorageTests.swift */; };
+		1F76CAE71E97F6D300D0E837 /* NameDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F76CAE61E97F6D300D0E837 /* NameDictionaryTests.swift */; };
 		49D439ED58E037ACE795D86A /* Pods_Inkwell_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1901B6AD400171A1A72E038 /* Pods_Inkwell_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -32,6 +33,7 @@
 		198562749B57EDBD3C138C36 /* Inkwell.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Inkwell.podspec; path = ../Inkwell.podspec; sourceTree = "<group>"; };
 		1D94F6C8426B720980FFC86D /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		1F76CAE41E97F08800D0E837 /* StorageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageTests.swift; sourceTree = "<group>"; };
+		1F76CAE61E97F6D300D0E837 /* NameDictionaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameDictionaryTests.swift; sourceTree = "<group>"; };
 		37D7E0C8D3E515B4F258C0C9 /* Pods-Inkwell_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Inkwell_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Inkwell_Example/Pods-Inkwell_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		4D579D369AA5A2D6C7B3EC7C /* Pods-Inkwell_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Inkwell_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Inkwell_Tests/Pods-Inkwell_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* Inkwell_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Inkwell_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -131,6 +133,7 @@
 				607FACEB1AFB9204008FA782 /* FontTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 				1F76CAE41E97F08800D0E837 /* StorageTests.swift */,
+				1F76CAE61E97F6D300D0E837 /* NameDictionaryTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -374,6 +377,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACEC1AFB9204008FA782 /* FontTests.swift in Sources */,
+				1F76CAE71E97F6D300D0E837 /* NameDictionaryTests.swift in Sources */,
 				1F76CAE51E97F08800D0E837 /* StorageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
