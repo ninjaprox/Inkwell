@@ -75,21 +75,21 @@ public final class Inkwell {
                      size: CGFloat,
                      at url: URL? = nil,
                      completion: @escaping (UIFont?) -> Void) -> FontOperation {
-        let operation = FontOperation(storage: storage,
-                                      nameDictionary: nameDictionary,
-                                      fontRegister: fontRegister,
-                                      fontDownloader: fontDownloader,
-                                      googleFontsMetadata: googleFontsMetadata,
-                                      font: font,
-                                      size: size,
-                                      url: url) { uifont in
-                                        DispatchQueue.main.async {
-                                            completion(uifont)
-                                        }
+        let operation = InternalFontOperation(storage: storage,
+                                              nameDictionary: nameDictionary,
+                                              fontRegister: fontRegister,
+                                              fontDownloader: fontDownloader,
+                                              googleFontsMetadata: googleFontsMetadata,
+                                              font: font,
+                                              size: size,
+                                              url: url) { uifont in
+                                                DispatchQueue.main.async {
+                                                    completion(uifont)
+                                                }
         }
-
+        
         operationQueue.addOperation(operation)
-
-        return operation
+        
+        return FontOperation(operation: operation)
     }
 }

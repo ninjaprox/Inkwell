@@ -25,7 +25,21 @@
 
 import Alamofire
 
-public final class FontOperation: Operation {
+/// The font operation.
+public final class FontOperation {
+    private let operation: InternalFontOperation
+
+    init(operation: InternalFontOperation) {
+        self.operation = operation
+    }
+
+    /// Cancel the operation.
+    public func cancel() {
+        operation.cancel()
+    }
+}
+
+final class InternalFontOperation: Operation {
     typealias Completion = (UIFont?) -> Void
 
     private let storage: Storage
@@ -72,9 +86,11 @@ public final class FontOperation: Operation {
 
     // MARK: - KVO
 
-    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         switch keyPath {
         case .some("isCancelled"):
+            debugPrint("isCancelled")
+
             guard isCancelled else { break }
 
             metadataRequest?.cancel()
@@ -85,10 +101,10 @@ public final class FontOperation: Operation {
 
     // MARK: - Override
 
-    override public var isAsynchronous: Bool { return true }
+    override var isAsynchronous: Bool { return true }
 
     private var _executing : Bool = false
-    override public var isExecuting : Bool {
+    override var isExecuting : Bool {
         get { return _executing }
         set {
             guard _executing != newValue else { return }
@@ -99,7 +115,7 @@ public final class FontOperation: Operation {
     }
 
     private var _finished : Bool = false
-    override public var isFinished : Bool {
+    override var isFinished : Bool {
         get { return _finished }
         set {
             guard _finished != newValue else { return }
@@ -109,7 +125,7 @@ public final class FontOperation: Operation {
         }
     }
 
-    override public func start() {
+    override func start() {
         guard !isCancelled else { return }
 
         isExecuting = true
