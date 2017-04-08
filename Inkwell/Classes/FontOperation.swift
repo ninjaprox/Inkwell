@@ -74,8 +74,6 @@ public final class FontOperation: Operation {
         case .some(#keyPath(isCancelled)):
             guard isCancelled else { break }
 
-            debugPrint("isCancelled")
-
             metadataRequest?.cancel()
             downloadRequest?.cancel()
         default: break

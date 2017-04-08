@@ -72,8 +72,6 @@ final class GoogleFontsMetadata {
             .validate(statusCode: 200..<300)
             .validate(contentType: ["application/json"])
             .responseJSON(queue: queue, options: .allowFragments) { response in
-                debugPrint("fetched Google Fonts metadata")
-
                 let familyResponse = response.flatMap { json -> FamilyDictionary in
                     guard let json = json as? JSON else { return [:] }
 
@@ -135,8 +133,6 @@ final class GoogleFontsMetadata {
     ///
     /// - Returns: `true` if existing, otherwise `false`.
     func exist() -> Bool {
-        debugPrint("exist()")
-
         return storage.googleFontsMetadataExists()
     }
 
