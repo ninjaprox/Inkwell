@@ -75,10 +75,8 @@ For full API documentation, please check [Inkwell's documentation](http://cocoad
 
 - [Alamofire](https://github.com/Alamofire/Alamofire)
 
-## Author
-
-Vinh Nguyen, ninjaprox@gmail.com
-
 ## License
 
-Inkwell is available under the MIT license. See the LICENSE file for more info.
+_Inkwell_ is available under the MIT license. See the [LICENSE](https://github.com/ninjaprox/Inkwell/blob/master/LICENSE) file for more info.
+
+Copyright (c) 2017 Vinh Nguyen [@ninjaprox](http://twitter.com/ninjaprox)
