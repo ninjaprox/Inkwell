@@ -23,9 +23,9 @@
 // SOFTWARE.
 //
 
-import Foundation
+import Alamofire
 
-final class FontOperation: Operation {
+public final class FontOperation: Operation {
     typealias Completion = (UIFont?) -> Void
 
     private let storage: Storage
@@ -36,6 +36,8 @@ final class FontOperation: Operation {
     private let font: Font
     private let size: CGFloat
     private let completion: Completion
+    private var metadataRequest: DownloadRequest?
+    private var downloadRequest: DownloadRequest?
 
     // MARK: - Init
 
@@ -55,14 +57,37 @@ final class FontOperation: Operation {
         self.font = font
         self.size = size
         self.completion = completion
+
+        super.init()
+
+        addObserver(self, forKeyPath: #keyPath(isCancelled), options: .new, context: nil)
+    }
+
+    deinit {
+        removeObserver(self, forKeyPath: #keyPath(isCancelled))
+    }
+
+    // MARK: - KVO
+
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        switch keyPath {
+        case .some(#keyPath(isCancelled)):
+            guard isCancelled else { break }
+
+            debugPrint("isCancelled")
+
+            metadataRequest?.cancel()
+            downloadRequest?.cancel()
+        default: break
+        }
     }
 
     // MARK: - Override
 
-    override var isAsynchronous: Bool { return true }
+    override public var isAsynchronous: Bool { return true }
 
     private var _executing : Bool = false
-    override var isExecuting : Bool {
+    override public var isExecuting : Bool {
         get { return _executing }
         set {
             guard _executing != newValue else { return }
@@ -73,7 +98,7 @@ final class FontOperation: Operation {
     }
 
     private var _finished : Bool = false
-    override var isFinished : Bool {
+    override public var isFinished : Bool {
         get { return _finished }
         set {
             guard _finished != newValue else { return }
@@ -83,13 +108,17 @@ final class FontOperation: Operation {
         }
     }
 
-    override func start() {
+    override public func start() {
+        guard !isCancelled else { return }
+
         isExecuting = true
         isFinished = false
 
         if let postscriptName = nameDictionary.postscriptName(for: font),
             let _ = UIFont(name: postscriptName, size: size) {
             finish()
+
+            return
         }
 
         if storage.fileExists(for: font) {
@@ -109,6 +138,8 @@ final class FontOperation: Operation {
             fetchGoogleFontsMetadata { fetchResult in
                 switch fetchResult {
                 case .success(let familyDictionary):
+                    guard !self.isCancelled else { return }
+
                     self.download(self.font, familyDictionary: familyDictionary) { downloadResult in
                         switch downloadResult {
                         case .success:
@@ -127,7 +158,7 @@ final class FontOperation: Operation {
     // MARK: - Helpers
 
     private func fetchGoogleFontsMetadata(completion: @escaping (Result<GoogleFontsMetadata.FamilyDictionary>) -> Void) {
-        _ = googleFontsMetadata.fetch(completion: completion)
+        metadataRequest = googleFontsMetadata.fetch(completion: completion)
     }
 
     private func download(_ font: Font,
@@ -140,7 +171,7 @@ final class FontOperation: Operation {
                 return
         }
 
-        _ = fontDownloader.download(font, at: URL, completion: completion)
+        downloadRequest = fontDownloader.download(font, at: URL, completion: completion)
     }
 
     private func register(_ font: Font) {
@@ -158,7 +189,7 @@ final class FontOperation: Operation {
 
         completion(uifont)
     }
-
+    
     private func fail() {
         isExecuting = false
         isFinished = true
