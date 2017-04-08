@@ -24,30 +24,7 @@
 //
 
 import UIKit
-import Inkwell
 
 class ViewController: UIViewController {
-    @IBOutlet weak var scrollView: UIScrollView!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        let fonts = ["ABeeZee", "Abel", "Abhaya Libre", "Abril Fatface", "Aclonica", "Acme", "Actor", "Adamina", "Advent Pro", "Aguafina Script", "Akronim", "Aladin", "Aldrich", "Alef", "Alegreya", "Alegreya SC", "Alegreya Sans", "Alegreya Sans SC", "Alex Brush", "Alfa Slab One", "Alice", "Alike", "Alike Angular", "Allan", "Allerta", "Allerta Stencil", "Allura", "Almendra", "Almendra Display", "Almendra SC", "Amarante", "Amaranth", "Amatic SC", "Amatica SC", "Amethysta", "Amiko", "Amiri", "Amita", "Anaheim", "Andada", "Andika", "Angkor", "Annie Use Your Telescope", "Anonymous Pro", "Antic", "Antic Didone", "Antic Slab", "Anton", "Arapey", "Arbutus"]
-        //        let fonts = ["ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee"]
-        let inkwell = Inkwell.shared
-
-        scrollView.contentInset.top = 20
-        for (index, font) in fonts.enumerated() {
-            inkwell.font(for: Font(family: font, variant: .regular),
-                         size: 25) { font in
-                            let label = UILabel(frame: CGRect(x: 10, y: 50 * index, width: 0, height: 0))
-
-                            label.font = font
-                            label.text = font?.fontName
-                            label.sizeToFit()
-                            self.scrollView.addSubview(label)
-                            self.scrollView.contentSize.height = label.frame.origin.y + label.frame.size.height
-            }
-        }
-    }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="kLA-OG-gqL">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Inkwell-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="Inkwell_Example" customModuleProvider="target" sceneMemberID="viewController">
@@ -21,23 +21,79 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oxv-Js-JO3">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                            </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mI8-1S-LWk">
+                                <rect key="frame" x="159.5" y="318" width="55" height="30"/>
+                                <state key="normal" title="Font list"/>
+                                <connections>
+                                    <segue destination="h9n-fF-bww" kind="show" id="zf1-Dq-iae"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Oxv-Js-JO3" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="99L-M0-72A"/>
-                            <constraint firstAttribute="trailing" secondItem="Oxv-Js-JO3" secondAttribute="trailing" id="HCc-pA-DFs"/>
-                            <constraint firstItem="Oxv-Js-JO3" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="YV4-MK-w3t"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Oxv-Js-JO3" secondAttribute="bottom" id="tsi-sB-Csc"/>
+                            <constraint firstItem="mI8-1S-LWk" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="6qx-6q-eqd"/>
+                            <constraint firstItem="mI8-1S-LWk" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="PkL-yB-oQv"/>
                         </constraints>
                     </view>
-                    <connections>
-                        <outlet property="scrollView" destination="Oxv-Js-JO3" id="eqK-fI-Pf5"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="Inkwell" id="DSO-Qg-Dfy"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1076" y="98.50074962518741"/>
+        </scene>
+        <!--Font list-->
+        <scene sceneID="bcF-sy-vwa">
+            <objects>
+                <tableViewController id="h9n-fF-bww" customClass="FontsViewController" customModule="Inkwell_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="OIl-og-a56">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FontCell" textLabel="3hy-Gb-viz" style="IBUITableViewCellStyleDefault" id="eBn-mE-lzy" customClass="FontCell" customModule="Inkwell_Example" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eBn-mE-lzy" id="S0L-yZ-vGf">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3hy-Gb-viz">
+                                            <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="h9n-fF-bww" id="QR5-uI-r5I"/>
+                            <outlet property="delegate" destination="h9n-fF-bww" id="D93-df-6ps"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Font list" id="MH1-c5-fvr"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="I6A-lb-jDJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1948" y="98.50074962518741"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="OjN-Ad-FpY">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="kLA-OG-gqL" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="XFi-fs-PtQ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="vXZ-lx-hvc" kind="relationship" relationship="rootViewController" id="6kY-qA-X7L"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="T8r-pQ-LUk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="136.80000000000001" y="98.50074962518741"/>
         </scene>
