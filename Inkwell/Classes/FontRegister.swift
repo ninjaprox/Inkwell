@@ -29,9 +29,11 @@ import CoreText
 /// The class to register font.
 final class FontRegister {
     private let storage: Storage
+    private let nameDictionary: NameDictionary
 
-    init(storage: Storage) {
+    init(storage: Storage, nameDictionary: NameDictionary) {
         self.storage = storage
+        self.nameDictionary = nameDictionary
     }
 
     /// Register the font.
@@ -48,7 +50,7 @@ final class FontRegister {
 
         guard CTFontManagerRegisterGraphicsFont(cgfont, nil) else { return false }
         guard let postscriptName = cgfont.postScriptName as String?,
-            NameDictionary(storage: storage).setPostscriptName(postscriptName, for: font) else {
+            nameDictionary.setPostscriptName(postscriptName, for: font) else {
                 CTFontManagerUnregisterGraphicsFont(cgfont, nil)
 
                 return false

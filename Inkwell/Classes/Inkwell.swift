@@ -50,7 +50,7 @@ public final class Inkwell {
         operationQueue.qualityOfService = .utility
 
         nameDictionary = NameDictionary(storage: storage)
-        fontRegister = FontRegister(storage: storage)
+        fontRegister = FontRegister(storage: storage, nameDictionary: nameDictionary)
         fontDownloader = FontDownloader(storage: storage, queue: operationQueue.underlyingQueue)
         googleFontsMetadata = GoogleFontsMetadata(APIKey: APIKey, storage: storage, queue: operationQueue.underlyingQueue)
     }

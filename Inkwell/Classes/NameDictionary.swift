@@ -27,6 +27,7 @@ import Foundation
 
 final class NameDictionary {
     private let storage: Storage
+    private var cache: NSMutableDictionary?
 
     init(storage: Storage) {
         self.storage = storage
@@ -37,8 +38,12 @@ final class NameDictionary {
     /// - Parameter font: The font needed to get the postscript name.
     /// - Returns: The postscript name.
     func postscriptName(for font: Font) -> String? {
-        guard let nameDictionary = NSDictionary(contentsOf: storage.nameDictionaryURL) else {
+        guard let nameDictionary = cache ?? NSMutableDictionary(contentsOf: storage.nameDictionaryURL) else {
             return nil
+        }
+
+        if cache == nil {
+            cache = nameDictionary
         }
 
         return nameDictionary.value(forKey: font.name) as? String
@@ -52,9 +57,12 @@ final class NameDictionary {
     /// - Returns: `true` if set successfully, otherwise `false`.
     @discardableResult func setPostscriptName(_ name: String, for font: Font) -> Bool {
         let URL = storage.nameDictionaryURL
-        let nameDictionary = NSMutableDictionary(contentsOf: URL) ?? NSMutableDictionary(capacity: 1)
+        let nameDictionary = cache ?? NSMutableDictionary(contentsOf: URL) ?? NSMutableDictionary(capacity: 1)
 
         nameDictionary.setValue(name, forKey: font.name)
+        if cache == nil {
+            cache = nameDictionary
+        }
 
         return nameDictionary.write(to: URL, atomically: true)
     }
