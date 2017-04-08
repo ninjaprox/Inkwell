@@ -1,5 +1,5 @@
 //
-//  FontRegister.swift
+//  MockNameDictionary.swift
 //  Inkwell
 //
 // Copyright (c) 2017 Vinh Nguyen
@@ -23,39 +23,15 @@
 // SOFTWARE.
 //
 
-import Foundation
-import CoreText
+@testable import Inkwell
 
-/// The class to register font.
-final class FontRegister {
-    private let storage: Storable
-    private let nameDictionary: NameDictionaryProtocol
+class MockNameDictionary: NameDictionaryProtocol {
 
-    init(storage: Storable, nameDictionary: NameDictionaryProtocol) {
-        self.storage = storage
-        self.nameDictionary = nameDictionary
+    func postscriptName(for font: Font) -> String? {
+        return nil
     }
 
-    /// Register the font.
-    ///
-    /// - Parameter font: The font.
-    /// - Returns: `true` if successful, otherwise `false.
-    @discardableResult func register(_ font: Font) -> Bool {
-        guard let data = try? Data(contentsOf: storage.URL(for: font)),
-            let provider = CGDataProvider(data: data as CFData) else {
-                return false
-        }
-
-        let cgfont = CGFont(provider)
-
-        guard CTFontManagerRegisterGraphicsFont(cgfont, nil) else { return false }
-        guard let postscriptName = cgfont.postScriptName as String?,
-            nameDictionary.setPostscriptName(postscriptName, for: font) else {
-                CTFontManagerUnregisterGraphicsFont(cgfont, nil)
-
-                return false
-        }
-        
-        return true
+    func setPostscriptName(_ name: String, for font: Font) -> Bool {
+        return false
     }
 }

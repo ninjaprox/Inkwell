@@ -23,7 +23,13 @@
 // SOFTWARE.
 //
 
-final class Storage {
+protocol Storable {
+    var nameDictionaryURL: URL { get }
+
+    func URL(for font: Font) -> URL
+}
+
+final class Storage: Storable {
     private let domain = "me.vinhis.Inkwell"
     private let metadataFile = "googleFonts.json"
     private let fontsFolder = "fonts"
@@ -56,9 +62,7 @@ final class Storage {
     /// - Parameter font: The font needed to check its file.
     /// - Returns: `true` if the file exists, otherwise `false`.
     func fileExists(for font: Font) -> Bool {
-        let fontURL = domainURL
-            .appendingPathComponent(fontsFolder, isDirectory: true)
-            .appendingPathComponent("\(font.filename)")
+        let fontURL = fontsURL.appendingPathComponent("\(font.filename)")
 
         return FileManager.default.fileExists(atPath: fontURL.path)
     }

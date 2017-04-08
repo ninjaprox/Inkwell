@@ -25,11 +25,17 @@
 
 import Foundation
 
-final class NameDictionary {
-    private let storage: Storage
+protocol NameDictionaryProtocol {
+
+    func postscriptName(for font: Font) -> String?
+    func setPostscriptName(_ name: String, for font: Font) -> Bool
+}
+
+final class NameDictionary: NameDictionaryProtocol {
+    private let storage: Storable
     private var cache: NSMutableDictionary?
 
-    init(storage: Storage) {
+    init(storage: Storable) {
         self.storage = storage
     }
 
