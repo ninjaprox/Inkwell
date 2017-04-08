@@ -43,7 +43,7 @@ class ViewController: UIViewController {
                             let label = UILabel(frame: CGRect(x: 10, y: 50 * index, width: 0, height: 0))
 
                             label.font = font
-                            label.text = font.fontName
+                            label.text = font?.fontName
                             label.sizeToFit()
                             self.scrollView.addSubview(label)
                             self.scrollView.contentSize.height = label.frame.origin.y + label.frame.size.height
