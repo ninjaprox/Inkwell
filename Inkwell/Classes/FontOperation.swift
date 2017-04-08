@@ -89,9 +89,9 @@ public final class FontOperation: Operation {
         get { return _executing }
         set {
             guard _executing != newValue else { return }
-            willChangeValue(forKey: "isExecuting")
+            willChangeValue(forKey: #keyPath(isExecuting))
             _executing = newValue
-            didChangeValue(forKey: "isExecuting")
+            didChangeValue(forKey: #keyPath(isExecuting))
         }
     }
 
@@ -100,9 +100,9 @@ public final class FontOperation: Operation {
         get { return _finished }
         set {
             guard _finished != newValue else { return }
-            willChangeValue(forKey: "isFinished")
+            willChangeValue(forKey: #keyPath(isFinished))
             _finished = newValue
-            didChangeValue(forKey: "isFinished")
+            didChangeValue(forKey: #keyPath(isFinished))
         }
     }
 
