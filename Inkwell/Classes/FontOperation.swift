@@ -63,18 +63,18 @@ public final class FontOperation: Operation {
 
         super.init()
 
-        addObserver(self, forKeyPath: #keyPath(isCancelled), options: .new, context: nil)
+        addObserver(self, forKeyPath: "isCancelled", options: .new, context: nil)
     }
 
     deinit {
-        removeObserver(self, forKeyPath: #keyPath(isCancelled))
+        removeObserver(self, forKeyPath: "isCancelled")
     }
 
     // MARK: - KVO
 
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         switch keyPath {
-        case .some(#keyPath(isCancelled)):
+        case .some("isCancelled"):
             guard isCancelled else { break }
 
             metadataRequest?.cancel()
@@ -92,9 +92,9 @@ public final class FontOperation: Operation {
         get { return _executing }
         set {
             guard _executing != newValue else { return }
-            willChangeValue(forKey: #keyPath(isExecuting))
+            willChangeValue(forKey: "isExecuting")
             _executing = newValue
-            didChangeValue(forKey: #keyPath(isExecuting))
+            didChangeValue(forKey: "isExecuting")
         }
     }
 
@@ -103,9 +103,9 @@ public final class FontOperation: Operation {
         get { return _finished }
         set {
             guard _finished != newValue else { return }
-            willChangeValue(forKey: #keyPath(isFinished))
+            willChangeValue(forKey: "isFinished")
             _finished = newValue
-            didChangeValue(forKey: #keyPath(isFinished))
+            didChangeValue(forKey: "isFinished")
         }
     }
 
