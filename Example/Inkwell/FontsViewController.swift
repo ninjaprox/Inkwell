@@ -26,7 +26,7 @@
 import UIKit
 import Inkwell
 
-class FontsViewController: UITableViewController {
+final class FontsViewController: UITableViewController {
     let fonts = ["ABeeZee", "Abel", "Abhaya Libre", "Abril Fatface", "Aclonica", "Acme", "Actor", "Adamina", "Advent Pro", "Aguafina Script", "Akronim", "Aladin", "Aldrich", "Alef", "Alegreya", "Alegreya SC", "Alegreya Sans", "Alegreya Sans SC", "Alex Brush", "Alfa Slab One", "Alice", "Alike", "Alike Angular", "Allan", "Allerta", "Allerta Stencil", "Allura", "Almendra", "Almendra Display", "Almendra SC", "Amarante", "Amaranth", "Amatic SC", "Amatica SC", "Amethysta", "Amiko", "Amiri", "Amita", "Anaheim", "Andada", "Andika", "Angkor", "Annie Use Your Telescope", "Anonymous Pro", "Antic", "Antic Didone", "Antic Slab", "Anton", "Arapey", "Arbutus"]
     //                let fonts = ["ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee", "ABeeZee"]
 

@@ -24,7 +24,25 @@
 //
 
 import UIKit
+import Inkwell
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
+    @IBOutlet weak var fontTextField: UITextField!
+    @IBOutlet weak var fontListButton: UIButton!
+    let fontSize: CGFloat = 20
+    let defaultFont = UIFont.systemFont(ofSize: 20)
+    var fontOperation: FontOperation?
 
+    @IBAction func fontTextFieldDidChange(_ textField: UITextField) {
+        fontOperation?.cancel()
+
+        guard let text = textField.text else { return }
+
+        let font = Font(family: text, variant: .regular)
+
+        fontOperation = Inkwell.shared.font(for: font, size: fontSize) { uifont in
+            self.fontTextField.font = uifont ?? self.defaultFont
+            self.fontListButton.titleLabel?.font = uifont ?? self.defaultFont
+        }
+    }
 }

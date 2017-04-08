@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -22,20 +23,39 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mI8-1S-LWk">
-                                <rect key="frame" x="159.5" y="318" width="55" height="30"/>
-                                <state key="normal" title="Font list"/>
+                                <rect key="frame" x="152" y="315" width="71" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Font list">
+                                    <color key="titleColor" red="0.19215686274509802" green="0.16078431372549018" blue="0.3529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
                                 <connections>
                                     <segue destination="h9n-fF-bww" kind="show" id="zf1-Dq-iae"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="20" translatesAutoresizingMaskIntoConstraints="NO" id="tnE-lg-gYN">
+                                <rect key="frame" x="81" y="277" width="213" height="30"/>
+                                <color key="textColor" red="0.19215686269999999" green="0.16078431369999999" blue="0.35294117650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="fontTextFieldDidChange:" destination="vXZ-lx-hvc" eventType="editingChanged" id="s4h-VT-iSL"/>
+                                </connections>
+                            </textField>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.97254901960784312" green="0.5725490196078431" blue="0.062745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="mI8-1S-LWk" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="6qx-6q-eqd"/>
-                            <constraint firstItem="mI8-1S-LWk" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="PkL-yB-oQv"/>
+                            <constraint firstItem="tnE-lg-gYN" firstAttribute="width" secondItem="mI8-1S-LWk" secondAttribute="width" multiplier="3" id="6jQ-I5-oXy"/>
+                            <constraint firstItem="mI8-1S-LWk" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="Wsj-1w-pr7"/>
+                            <constraint firstItem="tnE-lg-gYN" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="Zg2-IK-v3A"/>
+                            <constraint firstItem="mI8-1S-LWk" firstAttribute="top" secondItem="tnE-lg-gYN" secondAttribute="bottom" constant="8" id="dIV-IA-kH5"/>
+                            <constraint firstItem="mI8-1S-LWk" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="qSe-Pk-Z4r"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Inkwell" id="DSO-Qg-Dfy"/>
+                    <connections>
+                        <outlet property="fontListButton" destination="mI8-1S-LWk" id="5Ag-uI-7Uh"/>
+                        <outlet property="fontTextField" destination="tnE-lg-gYN" id="gyI-1t-Ods"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
@@ -48,7 +68,8 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="OIl-og-a56">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.97254901959999995" green="0.57254901960000004" blue="0.062745098040000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="separatorColor" red="0.19215686269999999" green="0.16078431369999999" blue="0.35294117650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FontCell" textLabel="3hy-Gb-viz" style="IBUITableViewCellStyleDefault" id="eBn-mE-lzy" customClass="FontCell" customModule="Inkwell_Example" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
@@ -61,11 +82,12 @@
                                             <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
+                                            <color key="textColor" red="0.19215686269999999" green="0.16078431369999999" blue="0.35294117650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.97254901959999995" green="0.57254901960000004" blue="0.062745098040000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -87,6 +109,11 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="XFi-fs-PtQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="0.97254901959999995" green="0.57254901960000004" blue="0.062745098040000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="barTintColor" red="0.19215686269999999" green="0.16078431369999999" blue="0.35294117650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.97254901959999995" green="0.57254901960000004" blue="0.062745098040000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
