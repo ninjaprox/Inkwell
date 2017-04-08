@@ -95,6 +95,7 @@ final class InternalFontOperation: Operation {
 
             metadataRequest?.cancel()
             downloadRequest?.cancel()
+            finish(isCancelled: isCancelled)
         default: break
         }
     }
