@@ -16,6 +16,8 @@ In brief, _Inkwell_ is a font library to use custom fonts on the fly. _Inkwell_ 
 
 To run the example project, clone the repo, and run `pod install` from the `Example` directory first.
 
+![alt tag](https://raw.githubusercontent.com/ninjaprox/Inkwell/master/Demo.gif)
+
 ## Installation
 
 ### CocoaPods
