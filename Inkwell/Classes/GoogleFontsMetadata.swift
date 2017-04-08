@@ -44,6 +44,7 @@ final class GoogleFontsMetadata {
 
         return variants.map { $0.rawValue }.contains($0)
     }
+    private var cache: FamilyDictionary?
 
     init(APIKey: String, storage: Storage, queue: DispatchQueue?) {
         self.APIKey = APIKey
@@ -80,7 +81,9 @@ final class GoogleFontsMetadata {
                 }
 
                 switch familyResponse.result {
-                case .success(let value): completion(.success(value))
+                case .success(let value):
+                    self.cache = value
+                    completion(.success(value))
                 case .failure(let error):
                     self.storage.removeGoogleFontsMetadata()
                     completion(.failure(error))
@@ -92,13 +95,23 @@ final class GoogleFontsMetadata {
     ///
     /// - Returns: The family dictionary.
     func familyDictionary() -> FamilyDictionary {
+        if let cache = cache {
+            return cache
+        }
+
         guard let data = try? Data(contentsOf: storage.metadataURL),
             let optionalJson = try? JSONSerialization.jsonObject(with: data, options: .allowFragments),
             let json = optionalJson as? JSON else {
+                cache = nil
+
                 return [:]
         }
 
-        return parse(json: json, variantFilter: defaultVariantFilter)
+        if cache == nil {
+            cache = parse(json: json, variantFilter: defaultVariantFilter)
+        }
+
+        return cache!
     }
 
     /// Get the file of specified font.
@@ -108,7 +121,7 @@ final class GoogleFontsMetadata {
     ///   - familyDictionary: The family dictionary to look up the file.
     /// - Returns: The file.
     func file(of font: Font, familyDictionary: FamilyDictionary?) -> String? {
-        let familyDictionary = familyDictionary ?? self.familyDictionary()
+        let familyDictionary = cache ?? familyDictionary ?? self.familyDictionary()
 
         guard let files = familyDictionary[font.family],
             let index = files.index(where: { $0.hasSuffix(font.variant.rawValue) }) else {
