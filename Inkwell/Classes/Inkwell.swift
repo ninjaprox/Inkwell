@@ -57,22 +57,39 @@ public final class Inkwell {
 
     // MARK: - Public interface
 
+    /// Create the `UIFont` with specified font information.
+    ///
+    /// - Note: Google Fonts has higher priority
+    ///         that means the `at` param is only used unless the given font
+    ///         information is found on Google Fonts, otherwise the `at` param
+    ///         is ignored.
+    ///
+    /// - Parameters:
+    ///   - font: The font information.
+    ///   - size: The font size.
+    ///   - at: The URL used to download the font file. Default is `nil`.
+    ///   - completion: The completion handler.
+    /// - Returns: The font operation.
     @discardableResult
-    public func font(for font: Font, size: CGFloat, completion: @escaping (UIFont?) -> Void) -> FontOperation {
+    public func font(for font: Font,
+                     size: CGFloat,
+                     at url: URL? = nil,
+                     completion: @escaping (UIFont?) -> Void) -> FontOperation {
         let operation = FontOperation(storage: storage,
                                       nameDictionary: nameDictionary,
                                       fontRegister: fontRegister,
                                       fontDownloader: fontDownloader,
                                       googleFontsMetadata: googleFontsMetadata,
                                       font: font,
-                                      size: size) { uifont in
+                                      size: size,
+                                      url: url) { uifont in
                                         DispatchQueue.main.async {
                                             completion(uifont)
                                         }
         }
 
         operationQueue.addOperation(operation)
-        
+
         return operation
     }
 }

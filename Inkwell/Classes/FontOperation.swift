@@ -35,6 +35,7 @@ public final class FontOperation: Operation {
     private let googleFontsMetadata: GoogleFontsMetadata
     private let font: Font
     private let size: CGFloat
+    private let url: URL?
     private let completion: Completion
     private var metadataRequest: DownloadRequest?
     private var downloadRequest: DownloadRequest?
@@ -48,6 +49,7 @@ public final class FontOperation: Operation {
          googleFontsMetadata: GoogleFontsMetadata,
          font: Font,
          size: CGFloat,
+         url: URL?,
          completion: @escaping Completion) {
         self.storage = storage
         self.nameDictionary = nameDictionary
@@ -56,6 +58,7 @@ public final class FontOperation: Operation {
         self.googleFontsMetadata = googleFontsMetadata
         self.font = font
         self.size = size
+        self.url = url
         self.completion = completion
 
         super.init()
@@ -162,14 +165,23 @@ public final class FontOperation: Operation {
     private func download(_ font: Font,
                           familyDictionary: GoogleFontsMetadata.FamilyDictionary?,
                           completion: @escaping (Result<URL>) -> Void) {
-        guard let file = googleFontsMetadata.file(of: font, familyDictionary: familyDictionary),
-            let URL = URL(string: file) else {
-                completion(.failure(nil))
+        var candidateURL: URL?
 
-                return
+        if let file = googleFontsMetadata.file(of: font, familyDictionary: familyDictionary),
+            let url = URL(string: file) {
+            candidateURL = url
+        }
+        if candidateURL == nil {
+            candidateURL = self.url
         }
 
-        downloadRequest = fontDownloader.download(font, at: URL, completion: completion)
+        guard let url = candidateURL else {
+            completion(.failure(nil))
+
+            return
+        }
+
+        downloadRequest = fontDownloader.download(font, at: url, completion: completion)
     }
 
     private func register(_ font: Font) {

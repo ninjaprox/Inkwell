@@ -64,7 +64,7 @@ public struct Font {
     ///
     /// - Parameters:
     ///   - family: The font family.
-    ///   - variant: The fontn variant.
+    ///   - variant: The font variant.
     public init(family: String, variant: Variant) {
         self.family = family
         self.variant = variant
