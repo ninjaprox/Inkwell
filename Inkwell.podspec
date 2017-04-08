@@ -21,5 +21,5 @@ Pod::Spec.new do |s|
   s.source_files = 'Inkwell/Classes/**/*'
   
   s.frameworks = 'Foundation', 'CoreText'
-  s.dependency 'Alamofire', '~> 4.4'
+  s.dependency 'Alamofire', '~> 4.4.0'
 end
