@@ -1,14 +1,14 @@
 language: objective-c
 cache: cocoapods
-podfile: Example/Podfile
+podfile: Inkwell/Podfile
 before_install:
 - gem install -N cocoapods -v 1.2.0
 - pod repo update
-- pod install --project-directory=Example
+- pod install --project-directory=Inkwell
 env:
   global:
-  - WORKSPACE=Example/Inkwell.xcworkspace
-  - SCHEME=Inkwell-Example
+  - WORKSPACE=Inkwell/Inkwell.xcworkspace
+  - SCHEME=Inkwell
 matrix:
   include:
   - osx_image: xcode8.2
