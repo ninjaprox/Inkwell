@@ -89,8 +89,6 @@ final class InternalFontOperation: Operation {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         switch keyPath {
         case .some("isCancelled"):
-            debugPrint("isCancelled")
-
             guard isCancelled else { break }
 
             metadataRequest?.cancel()
