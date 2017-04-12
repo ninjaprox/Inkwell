@@ -1,11 +1,5 @@
 use_frameworks!
 
-target 'Inkwell_Example' do
+target 'InkwellExample' do
   pod 'Inkwell', :path => '../'
-
-  target 'Inkwell_Tests' do
-    inherit! :search_paths
-
-    pod 'Inkwell', :path => '../'
-  end
 end

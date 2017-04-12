@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'Inkwell/Classes/**/*'
+  s.source_files = 'Inkwell/Inkwell/**/*.swift'
   
   s.frameworks = 'Foundation', 'CoreText'
   s.dependency 'Alamofire', '~> 4.4.0'
