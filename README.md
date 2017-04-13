@@ -22,7 +22,7 @@ To run the example project, clone the repo, and run `pod install` from the `Exam
 
 ### CocoaPods
 
-Install [Cocoapods](https://cocoapods.org) if need be.
+Install [CocoaPods](https://cocoapods.org) if need be.
 
 ```bash
 $ gem install cocoapods
