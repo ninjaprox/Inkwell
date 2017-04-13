@@ -1,13 +1,13 @@
 Pod::Spec.new do |s|
   s.name             = 'Inkwell'
-  s.version          = '1.0.0'
+  s.version          = '1.1.0'
   s.summary          = 'An inkwell to use custom fonts on the fly.'
   s.description      = <<-DESC
                        In fact, Inkwell takes responsibilities for:
                        - Downloading fonts from Google Fonts or custom resources.
                        - Registering custom fonts to the system.
                        - Loading and using custom fonts dynamically and seamlessly.
-                       All of these are wrapped in friendly, yet easy to use API. 
+                       All of these are wrapped in friendly, easy to use API. 
                        DESC
 
   s.screenshot       = "https://raw.githubusercontent.com/ninjaprox/Inkwell/master/Demo.gif"
