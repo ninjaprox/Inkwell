@@ -67,6 +67,23 @@ Inkwell.shared.font(for: font, size: fontSize) { uifont in
 
 _**Note:** Do not forget to `import Inkwell` in any file using Inkwell._
 
+## App Transport Security
+
+From iOS 9, it enforces using HTTPS connection by default. However, URLs of Google Fonts's font files are still using HTTP, you need to add the following to your `Info.plist` to except them from the ATS system.
+
+```xml
+<dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+        <key>fonts.gstatic.com</key>
+        <dict>
+            <key>NSExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+        </dict>
+    </dict>
+</dict>
+```
+
 ## Documentation
 
 For full API documentation, please check [Inkwell's documentation](http://cocoadocs.org/docsets/Inkwell).
