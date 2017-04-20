@@ -438,9 +438,11 @@ extension SessionDelegate: URLSessionTaskDelegate {
         let completeTask: (URLSession, URLSessionTask, Error?) -> Void = { [weak self] session, task, error in
             guard let strongSelf = self else { return }
 
-            strongSelf.taskDidComplete?(session, task, error)
-
-            strongSelf[task]?.delegate.urlSession(session, task: task, didCompleteWithError: error)
+            if let taskDidComplete = strongSelf.taskDidComplete {
+                taskDidComplete(session, task, error)
+            } else if let delegate = strongSelf[task]?.delegate {
+                delegate.urlSession(session, task: task, didCompleteWithError: error)
+            }
 
             NotificationCenter.default.post(
                 name: Notification.Name.Task.DidComplete,

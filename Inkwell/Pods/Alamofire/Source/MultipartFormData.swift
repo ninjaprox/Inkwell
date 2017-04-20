@@ -257,7 +257,8 @@ open class MultipartFormData {
         var isDirectory: ObjCBool = false
         let path = fileURL.path
 
-        guard FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) && !isDirectory.boolValue else {
+        guard FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) && !isDirectory.boolValue else
+        {
             setBodyPartError(withReason: .bodyPartFileIsDirectory(at: fileURL))
             return
         }

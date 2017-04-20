@@ -72,14 +72,16 @@ final class GoogleFontsMetadata {
             .validate(statusCode: 200..<300)
             .validate(contentType: ["application/json"])
             .responseJSON(queue: queue, options: .allowFragments) { response in
-                let familyResponse = response.flatMap { json -> FamilyDictionary in
-                    guard let json = json as? JSON else { return [:] }
+                guard let json = response.value as? JSON else {
+                    self.storage.removeGoogleFontsMetadata()
+                    completion(.failure(nil))
 
-                    return self.parse(json: json, variantFilter: self.defaultVariantFilter)
+                    return
                 }
 
-                switch familyResponse.result {
-                case .success(let value):
+                switch response.result {
+                case .success:
+                    let value = self.parse(json: json, variantFilter: self.defaultVariantFilter)
                     self.cache = value
                     completion(.success(value))
                 case .failure(let error):
