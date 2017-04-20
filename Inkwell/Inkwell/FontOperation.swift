@@ -204,8 +204,12 @@ final class InternalFontOperation: Operation {
     }
 
     private func finish(isCancelled: Bool = false) {
+        let wasExecuting = isExecuting
+
         isExecuting = false
-        isFinished = true
+        if wasExecuting {
+            isFinished = true
+        }
         guard let postscriptName = nameDictionary.postscriptName(for: font),
             let uifont = UIFont(name: postscriptName, size: size),
             !isCancelled else {
