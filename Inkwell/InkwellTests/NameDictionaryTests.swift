@@ -37,7 +37,7 @@ class NameDictionaryTests: XCTestCase {
 
         try? FileManager.default.createDirectory(at: storage.domainURL, withIntermediateDirectories: true, attributes: nil)
 
-        let nameDictionaryContent = NSDictionary(dictionary: ["Arial-regular": "Arial-regular"])
+        let nameDictionaryContent = NSDictionary(dictionary: ["Roboto-regular": "Roboto-regular"])
         nameDictionaryContent.write(to: storage.nameDictionaryURL, atomically: true)
     }
 
@@ -49,12 +49,12 @@ class NameDictionaryTests: XCTestCase {
     }
 
     func test_postscriptName() {
-        var font = Font(family: "Arial", variant: .regular)
+        var font = Font(family: "Roboto", variant: .regular)
         var postScriptName = nameDictionary.postscriptName(for: font)
         XCTAssertNotNil(postScriptName)
-        XCTAssertEqual(postScriptName!, "Arial-regular")
+        XCTAssertEqual(postScriptName, "Roboto-regular")
 
-        font = Font(family: "Arial", variant: ._700)
+        font = Font(family: "Roboto", variant: ._700)
         postScriptName = nameDictionary.postscriptName(for: font)
         XCTAssertNil(postScriptName)
     }
@@ -62,30 +62,98 @@ class NameDictionaryTests: XCTestCase {
     func test_postscriptName_fileNotFound() {
         try? FileManager.default.removeItem(atPath: storage.nameDictionaryURL.path)
 
-        let font = Font(family: "Arial", variant: .regular)
+        let font = Font(family: "Roboto", variant: .regular)
         let postScriptName = nameDictionary.postscriptName(for: font)
         XCTAssertNil(postScriptName)
     }
 
+    func test_postscriptName_lookUpFromRegisteredFonts() {
+        // Futura family
+        var font = Font(family: "Futura", variant: .regular)
+        var postScriptName = nameDictionary.postscriptName(for: font)
+
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Futura-Medium")
+
+        font = Font(family: "Futura", variant: ._700)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Futura-Bold")
+
+        font = Font(family: "Futura", variant: .italic)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Futura-MediumItalic")
+
+        font = Font(family: "Futura", variant: ._700italic)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNil(postScriptName)
+
+        // Arial family
+
+        font = Font(family: "Arial", variant: .regular)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "ArialMT")
+
+        font = Font(family: "Arial", variant: ._700)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Arial-BoldMT")
+
+        font = Font(family: "Arial", variant: .italic)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Arial-ItalicMT")
+
+        font = Font(family: "Arial", variant: ._700italic)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Arial-BoldItalicMT")
+
+        // Helvetica family
+
+        font = Font(family: "Helvetica", variant: .regular)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Helvetica")
+
+        font = Font(family: "Helvetica", variant: ._700)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Helvetica-Bold")
+
+        font = Font(family: "Helvetica", variant: .italic)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Helvetica-Oblique")
+
+        font = Font(family: "Helvetica", variant: ._700italic)
+        postScriptName = nameDictionary.postscriptName(for: font)
+        XCTAssertNotNil(postScriptName)
+        XCTAssertEqual(postScriptName, "Helvetica-BoldOblique")
+
+    }
+
     func test_setPostscriptName() {
-        let font = Font(family: "Arial", variant: ._700)
-        let result = nameDictionary.setPostscriptName("Arial-bold", for: font)
+        let font = Font(family: "Roboto", variant: ._700)
+        let result = nameDictionary.setPostscriptName("Roboto-bold", for: font)
         let postScriptName = nameDictionary.postscriptName(for: font)
 
         XCTAssertTrue(result)
         XCTAssertNotNil(postScriptName)
-        XCTAssertEqual(postScriptName!, "Arial-bold")
+        XCTAssertEqual(postScriptName, "Roboto-bold")
     }
 
     func test_setPostscriptName_fileNotFound() {
         try? FileManager.default.removeItem(atPath: storage.nameDictionaryURL.path)
 
-        let font = Font(family: "Arial", variant: ._700)
-        let result = nameDictionary.setPostscriptName("Arial-bold", for: font)
+        let font = Font(family: "Roboto", variant: ._700)
+        let result = nameDictionary.setPostscriptName("Roboto-bold", for: font)
         let postScriptName = nameDictionary.postscriptName(for: font)
 
         XCTAssertTrue(result)
         XCTAssertNotNil(postScriptName)
-        XCTAssertEqual(postScriptName!, "Arial-bold")
+        XCTAssertEqual(postScriptName, "Roboto-bold")
     }
 }

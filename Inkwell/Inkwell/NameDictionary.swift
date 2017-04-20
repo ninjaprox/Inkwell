@@ -39,6 +39,8 @@ final class NameDictionary: NameDictionaryProtocol {
         self.storage = storage
     }
 
+    // MARK: - Interface
+
     /// Get the postscript name of specified font.
     ///
     /// - Parameter font: The font needed to get the postscript name.
@@ -52,7 +54,8 @@ final class NameDictionary: NameDictionaryProtocol {
             cache = nameDictionary
         }
 
-        return nameDictionary.value(forKey: font.name) as? String
+        return lookUpPostscriptName(for: font) ??
+            (nameDictionary.value(forKey: font.name) as? String)
     }
 
     /// Set the postscript name of specified font.
@@ -71,5 +74,68 @@ final class NameDictionary: NameDictionaryProtocol {
         }
 
         return nameDictionary.write(to: URL, atomically: true)
+    }
+
+    // MARK: - Helpers
+
+    /// Try to look up the postscript name of specified font from registered fonts.
+    ///
+    /// - Parameter font: The font needed to get the postscript name.
+    /// - Returns: The postscript name.
+    private func lookUpPostscriptName(for font: Font) -> String? {
+        let weightNounRegex = try! NSRegularExpression(pattern: "(light|medium|bold|extrabold)", options: [.caseInsensitive])
+        let obliqueNounRegex = try! NSRegularExpression(pattern: "(italic|oblique)", options: [.caseInsensitive])
+        let boldRegex = try! NSRegularExpression(pattern: "(?<!\\w)bold", options: [.caseInsensitive])
+        let regularRegex = try! NSRegularExpression(pattern: "(^\\w+$|regular|(?<!\\w)medium)", options: [.caseInsensitive])
+        let fontNames = UIFont.fontNames(forFamilyName: font.family)
+        var filteredFontNames = fontNames
+
+        /*
+         ["ArialMT", "Arial-BoldItalicMT", "Arial-BoldMT", "Arial-ItalicMT"]
+         ["CourierNewPS-BoldMT", "CourierNewPS-ItalicMT", "CourierNewPSMT", "CourierNewPS-BoldItalicMT"]
+         ["Futura-CondensedMedium", "Futura-CondensedExtraBold", "Futura-Medium", "Futura-MediumItalic", "Futura-Bold"]
+         ["Georgia-BoldItalic", "Georgia", "Georgia-Italic", "Georgia-Bold"]
+         ["Helvetica-Bold", "Helvetica", "Helvetica-LightOblique", "Helvetica-Oblique", "Helvetica-BoldOblique", "Helvetica-Light"]
+         ["TimesNewRomanPSMT", "TimesNewRomanPS-BoldItalicMT", "TimesNewRomanPS-ItalicMT", "TimesNewRomanPS-BoldMT"]
+         ["Trebuchet-BoldItalic", "TrebuchetMS", "TrebuchetMS-Bold", "TrebuchetMS-Italic"]
+         ["Verdana-Italic", "Verdana-BoldItalic", "Verdana", "Verdana-Bold"]
+         */
+
+        switch font.variant {
+        case ._700italic:
+            filteredFontNames = fontNames.filter {
+                return regexMatches(boldRegex, string: $0) &&
+                    regexMatches(obliqueNounRegex, string: $0)
+            }
+        case ._700:
+            filteredFontNames = fontNames.filter {
+                return regexMatches(boldRegex, string: $0) &&
+                    !regexMatches(obliqueNounRegex, string: $0)
+            }
+        case .italic:
+            filteredFontNames = fontNames.filter {
+                return regexMatches(obliqueNounRegex, string: $0) &&
+                    !regexMatches(weightNounRegex, string: $0)
+            }
+            // Give another try with weight nouns.
+            if filteredFontNames.count == 0 {
+                filteredFontNames = fontNames.filter {
+                    return regexMatches(obliqueNounRegex, string: $0)
+                }
+            }
+        case .regular:
+            filteredFontNames = fontNames.filter {
+                return regexMatches(regularRegex, string: $0) &&
+                    !regexMatches(obliqueNounRegex, string: $0)
+            }
+        }
+
+        return filteredFontNames.count > 0 ? filteredFontNames[0] : nil
+    }
+
+    private func regexMatches(_ regex: NSRegularExpression, string: String) -> Bool {
+        let range = NSRange(location: 0, length: string.characters.count)
+        
+        return regex.matches(in: string, options: [], range: range).count > 0
     }
 }
