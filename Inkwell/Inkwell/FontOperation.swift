@@ -76,59 +76,40 @@ final class InternalFontOperation: Operation {
         self.completion = completion
 
         super.init()
-
-        addObserver(self, forKeyPath: "isCancelled", options: .new, context: nil)
-    }
-
-    deinit {
-        removeObserver(self, forKeyPath: "isCancelled")
-    }
-
-    // MARK: - KVO
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        switch keyPath {
-        case .some("isCancelled"):
-            guard isCancelled else { break }
-
-            metadataRequest?.cancel()
-            downloadRequest?.cancel()
-            finish(isCancelled: isCancelled)
-        default: break
-        }
     }
 
     // MARK: - Override
 
     override var isAsynchronous: Bool { return true }
 
-    private var _executing : Bool = false
-    override var isExecuting : Bool {
-        get { return _executing }
-        set {
-            guard _executing != newValue else { return }
+    private var _isExecuting: Bool = false {
+        willSet {
             willChangeValue(forKey: "isExecuting")
-            _executing = newValue
+        }
+        didSet {
             didChangeValue(forKey: "isExecuting")
         }
     }
+    override var isExecuting: Bool { return _isExecuting }
 
-    private var _finished : Bool = false
-    override var isFinished : Bool {
-        get { return _finished }
-        set {
-            guard _finished != newValue else { return }
+    private var _isFinished: Bool = false {
+        willSet {
             willChangeValue(forKey: "isFinished")
-            _finished = newValue
+        }
+        didSet {
             didChangeValue(forKey: "isFinished")
         }
     }
+    override var isFinished: Bool { return _isFinished }
 
     override func start() {
-        guard !isCancelled else { return }
+        guard !isCancelled else {
+            finish()
 
-        isExecuting = true
-        isFinished = false
+            return
+        }
+
+        _isExecuting = true
 
         if let postscriptName = nameDictionary.postscriptName(for: font),
             let _ = UIFont(name: postscriptName, size: size) {
@@ -154,7 +135,11 @@ final class InternalFontOperation: Operation {
             fetchGoogleFontsMetadata { fetchResult in
                 switch fetchResult {
                 case .success(let familyDictionary):
-                    guard !self.isCancelled else { return }
+                    guard !self.isCancelled else {
+                        self.finish()
+
+                        return
+                    }
 
                     self.download(self.font, familyDictionary: familyDictionary) { downloadResult in
                         switch downloadResult {
@@ -203,25 +188,26 @@ final class InternalFontOperation: Operation {
         fontRegister.register(font)
     }
 
-    private func finish(isCancelled: Bool = false) {
-        let wasExecuting = isExecuting
-
-        isExecuting = false
-        if wasExecuting {
-            isFinished = true
+    private func finish() {
+        defer {
+            _isExecuting = false
+            _isFinished = true
         }
-        guard let postscriptName = nameDictionary.postscriptName(for: font),
-            let uifont = UIFont(name: postscriptName, size: size),
-            !isCancelled else {
+        guard !isCancelled,
+            let postscriptName = nameDictionary.postscriptName(for: font),
+            let uifont = UIFont(name: postscriptName, size: size)
+            else {
                 return
         }
 
         completion(uifont)
     }
-    
+
     private func fail() {
-        isExecuting = false
-        isFinished = true
+        defer {
+            _isExecuting = false
+            _isFinished = true
+        }
         guard !isCancelled else { return }
         
         completion(nil)

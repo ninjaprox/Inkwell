@@ -35,24 +35,29 @@ public final class Inkwell {
         }
     }
 
-    private let storage = Storage()
+    private static let domain = "me.vinhis.Inkwell"
+    private let queue: DispatchQueue
+    private let storage: Storage
     private let nameDictionary: NameDictionary
     private let fontRegister: FontRegister
     private let fontDownloader: FontDownloader
     private let googleFontsMetadata: GoogleFontsMetadata
-    private let operationQueue = OperationQueue()
+    private let operationQueue: OperationQueue
 
     // MARK: - Init
 
     private init() {
-        operationQueue.name = "me.vinhis.Inkwell"
-        operationQueue.maxConcurrentOperationCount = 1
-        operationQueue.qualityOfService = .utility
-
+        queue = DispatchQueue(label: Inkwell.domain)
+        storage = Storage()
         nameDictionary = NameDictionary(storage: storage)
         fontRegister = FontRegister(storage: storage, nameDictionary: nameDictionary)
-        fontDownloader = FontDownloader(storage: storage, queue: operationQueue.underlyingQueue)
-        googleFontsMetadata = GoogleFontsMetadata(APIKey: APIKey, storage: storage, queue: operationQueue.underlyingQueue)
+        fontDownloader = FontDownloader(storage: storage, queue: queue)
+        googleFontsMetadata = GoogleFontsMetadata(APIKey: APIKey, storage: storage, queue: queue)
+        operationQueue = OperationQueue()
+        operationQueue.name = Inkwell.domain
+        operationQueue.maxConcurrentOperationCount = 1
+        operationQueue.qualityOfService = .utility
+        operationQueue.underlyingQueue = queue
     }
 
     // MARK: - Public interface
@@ -87,9 +92,9 @@ public final class Inkwell {
                                                     completion(uifont)
                                                 }
         }
-        
+
         operationQueue.addOperation(operation)
-        
+
         return FontOperation(operation: operation)
     }
 }
