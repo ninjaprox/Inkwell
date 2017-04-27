@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Inkwell'
-  s.version          = '1.1.0'
+  s.version          = '1.1.1'
   s.summary          = 'An inkwell to use custom fonts on the fly.'
   s.description      = <<-DESC
                        In fact, Inkwell takes responsibilities for:
