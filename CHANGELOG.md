@@ -1,5 +1,10 @@
 # Change log
 
+## [1.1.1](https://github.com/ninjaprox/Inkwell/releases/tag/1.1.1)
+
+- Look up postscript name from registered fonts
+- Fix deadlock in operation queue
+
 ## [1.1.0](https://github.com/ninjaprox/Inkwell/releases/tag/1.1.0)
 
 - Change folder structure.
