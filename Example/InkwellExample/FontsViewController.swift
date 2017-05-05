@@ -53,6 +53,10 @@ class FontCell: UITableViewCell {
     let fontSize: CGFloat = 25
     var fontOperation: FontOperation?
 
+    deinit {
+        fontOperation?.cancel()
+    }
+
     override func prepareForReuse() {
         super.prepareForReuse()
 
@@ -64,9 +68,9 @@ class FontCell: UITableViewCell {
     func display(_ font: Font) {
         textLabel?.font = UIFont.systemFont(ofSize: fontSize)
         textLabel?.text = font.family
-        fontOperation = Inkwell.shared.font(for: font, size: fontSize) { uifont in
-            self.textLabel?.font = uifont
-            self.textLabel?.text = uifont?.fontName
+        fontOperation = Inkwell.shared.font(for: font, size: fontSize) { [weak self] uifont in
+            self?.textLabel?.font = uifont
+            self?.textLabel?.text = uifont?.fontName
         }
     }
 }
