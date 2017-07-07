@@ -2,6 +2,7 @@
 
 [![CI Status](http://img.shields.io/travis/ninjaprox/Inkwell.svg?style=flat)](https://travis-ci.org/ninjaprox/Inkwell)
 [![Version](https://img.shields.io/cocoapods/v/Inkwell.svg?style=flat)](http://cocoapods.org/pods/Inkwell)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/cocoapods/l/Inkwell.svg?style=flat)](http://cocoapods.org/pods/Inkwell)
 [![Platform](https://img.shields.io/cocoapods/p/Inkwell.svg?style=flat)](http://cocoapods.org/pods/Inkwell)
 
@@ -36,18 +37,31 @@ use_frameworks!
 pod 'Inkwell'
 ```
 
-Then, run the following command.
+Run the following command.
 
 ```bash
 $ pod install
 ```
 ### Carthage
 
-Not yet supported.
+Install [Carthage](https://github.com/Carthage/Carthage) if need be.
+
+```bash
+$ brew update
+$ brew install carthage
+```
+
+Add `Inkwell` in your `Cartfile`.
+
+```ruby
+github "ninjaprox/Inkwell"
+```
+
+Run `carthage` to build the framework and drag the built `Inkwell.framework` into your Xcode project.
 
 ## Usage
 
-Firstly, set Google API key in the app delegate.
+Firstly, set the Google API key in the app delegate.
 
 ```swift
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -66,23 +80,6 @@ Inkwell.shared.font(for: font, size: fontSize) { uifont in
 ```
 
 _**Note:** Do not forget to `import Inkwell` in any file using Inkwell._
-
-## App Transport Security
-
-From iOS 9, it enforces using HTTPS connection by default. However, URLs of Google Fonts's font files are still using HTTP, you need to add the following to your `Info.plist` to except them from the ATS system.
-
-```xml
-<dict>
-    <key>NSExceptionDomains</key>
-    <dict>
-        <key>fonts.gstatic.com</key>
-        <dict>
-            <key>NSExceptionAllowsInsecureHTTPLoads</key>
-            <true/>
-        </dict>
-    </dict>
-</dict>
-```
 
 ## Documentation
 
