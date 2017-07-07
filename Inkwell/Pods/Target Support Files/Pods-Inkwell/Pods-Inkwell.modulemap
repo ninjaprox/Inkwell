@@ -1,0 +1,6 @@
+framework module Pods_Inkwell {
+  umbrella header "Pods-Inkwell-umbrella.h"
+
+  export *
+  module * { export * }
+}
