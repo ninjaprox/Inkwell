@@ -1,5 +1,10 @@
 # Change log
 
+## [1.2.0](https://github.com/ninjaprox/Inkwell/releases/tag/1.2.0)
+
+- Use https for Google font link
+- Support Carthage
+
 ## [1.1.1](https://github.com/ninjaprox/Inkwell/releases/tag/1.1.1)
 
 - Look up postscript name from registered fonts
