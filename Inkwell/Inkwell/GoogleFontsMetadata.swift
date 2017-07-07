@@ -160,7 +160,13 @@ final class GoogleFontsMetadata {
             var result = result
 
             result[family] = files.flatMap { (key, value) in
-                return variantFilter(key) ? value.appending("#\(key)") : nil
+                guard variantFilter(key),
+                    var urlComponents = URLComponents(string: value) else { return nil }
+
+                urlComponents.scheme = "https"
+                urlComponents.fragment = key
+                
+                return urlComponents.string
             }
             
             return result
