@@ -1,11 +1,10 @@
 use_frameworks!
+platform :ios, '8.0'
 
 target 'Inkwell' do
   pod 'Alamofire', '~> 4.4.0'
 
   target 'InkwellTests' do
     inherit! :search_paths
-
-    pod 'Alamofire', '~> 4.4.0'
   end
 end
