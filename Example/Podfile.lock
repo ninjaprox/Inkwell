@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.4.0)
-  - Inkwell (1.2.0):
+  - Inkwell (1.2.1):
     - Alamofire (~> 4.4.0)
 
 DEPENDENCIES:
@@ -12,7 +12,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
-  Inkwell: 7f21d4fa82a40e11e80f3e2e46d213e6e7088076
+  Inkwell: b38624d679a722baa4222b161d72fb8407a16b63
 
 PODFILE CHECKSUM: 44deffad5fd16cd63e25c367cd7ac75c9b3b5f07
 
