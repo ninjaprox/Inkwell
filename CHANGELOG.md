@@ -1,14 +1,18 @@
 # Change log
 
+## [1.2.1](https://github.com/ninjaprox/Inkwell/releases/tag/1.2.1)
+
+- Fix not call completion with nil font.
+
 ## [1.2.0](https://github.com/ninjaprox/Inkwell/releases/tag/1.2.0)
 
-- Use https for Google font link
-- Support Carthage
+- Use https for Google font link.
+- Support Carthage.
 
 ## [1.1.1](https://github.com/ninjaprox/Inkwell/releases/tag/1.1.1)
 
-- Look up postscript name from registered fonts
-- Fix deadlock in operation queue
+- Look up postscript name from registered fonts.
+- Fix deadlock in operation queue.
 
 ## [1.1.0](https://github.com/ninjaprox/Inkwell/releases/tag/1.1.0)
 
