@@ -193,16 +193,18 @@ final class InternalFontOperation: Operation {
             _isExecuting = false
             _isFinished = true
         }
-        guard !isCancelled,
-            let postscriptName = nameDictionary.postscriptName(for: font),
+        guard !isCancelled else { return }
+        guard let postscriptName = nameDictionary.postscriptName(for: font),
             let uifont = UIFont(name: postscriptName, size: size)
             else {
+                completion(nil)
+
                 return
         }
 
         completion(uifont)
     }
-
+    
     private func fail() {
         defer {
             _isExecuting = false
