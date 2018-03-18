@@ -134,7 +134,7 @@ final class NameDictionary: NameDictionaryProtocol {
     }
 
     private func regexMatches(_ regex: NSRegularExpression, string: String) -> Bool {
-        let range = NSRange(location: 0, length: string.characters.count)
+        let range = NSRange(location: 0, length: string.count)
         
         return regex.matches(in: string, options: [], range: range).count > 0
     }

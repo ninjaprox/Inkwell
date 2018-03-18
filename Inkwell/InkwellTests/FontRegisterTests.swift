@@ -53,7 +53,7 @@ class FontRegisterTests: XCTestCase {
         let provider = CGDataProvider(data: data as CFData)
         let cgfont = CGFont(provider!)
 
-        CTFontManagerUnregisterGraphicsFont(cgfont, nil)
+        CTFontManagerUnregisterGraphicsFont(cgfont!, nil)
         try? FileManager.default.removeItem(atPath: nameDictionaryURL.path)
 
         fontURL = nil
