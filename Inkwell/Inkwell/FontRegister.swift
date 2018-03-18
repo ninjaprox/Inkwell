@@ -48,12 +48,16 @@ final class FontRegister {
 
         let cgfont = CGFont(provider)
 
-        guard CTFontManagerRegisterGraphicsFont(cgfont!, nil) else { return false }
-        guard let postscriptName = cgfont?.postScriptName as String?,
-            nameDictionary.setPostscriptName(postscriptName, for: font) else {
-                CTFontManagerUnregisterGraphicsFont(cgfont!, nil)
+        if let cgfont = cgfont {
+            guard CTFontManagerRegisterGraphicsFont(cgfont, nil) else { return false }
+            guard let postscriptName = cgfont.postScriptName as String?,
+                nameDictionary.setPostscriptName(postscriptName, for: font) else {
+                    CTFontManagerUnregisterGraphicsFont(cgfont, nil)
 
-                return false
+                    return false
+            }
+        } else {
+            return false
         }
         
         return true
