@@ -40,7 +40,7 @@ final class GoogleFontsMetadata {
     private let storage: Storage
     private let queue: DispatchQueue?
     private let defaultVariantFilter: (String) -> Bool = {
-        let variants: [Font.Variant] = [.regular, ._700, .italic, ._700italic]
+        let variants: [Font.Variant] = [.thin, .thinItalic, .extralight, .extralightItalic, .light, .lightItalic, .regular, .regularItalic, .medium, .mediumItalic, .semibold, .semiboldItalic, .bold, .boldItalic, .extrabold, .extraboldItalic, .black, .blackItalic]
 
         return variants.map { $0.rawValue }.contains($0)
     }

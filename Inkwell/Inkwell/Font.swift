@@ -33,17 +33,24 @@ public struct Font {
     /// - italic: Italic.
     /// - _700italic: BoldItalic.
     public enum Variant: String {
-        /// Regular.
-        case regular
-
-        /// Bold.
-        case _700 = "700"
-
-        /// Italic.
-        case italic
-
-        /// BoldItalic
-        case _700italic = "700italic"
+        case thin = "100"
+        case thinItalic = "100italic"
+        case extralight = "200"
+        case extralightItalic = "200italic"
+        case light = "300"
+        case lightItalic = "300italic"
+        case regular = "regular"
+        case regularItalic = "italic"
+        case medium = "500"
+        case mediumItalic = "500italic"
+        case semibold = "600"
+        case semiboldItalic = "600italic"
+        case bold = "700"
+        case boldItalic = "700italic"
+        case extrabold = "800"
+        case extraboldItalic = "800italic"
+        case black = "900"
+        case blackItalic = "900italic"
     }
 
     /// The font family.
@@ -53,6 +60,10 @@ public struct Font {
     public let variant: Variant
 
     var name: String {
+        return "\(family)-\(String(describing: variant).capitalizingFirstLetter())"
+    }
+    
+    var idName: String {
         return "\(family)-\(variant.rawValue)"
     }
 
@@ -68,5 +79,15 @@ public struct Font {
     public init(family: String, variant: Variant) {
         self.family = family
         self.variant = variant
+    }
+}
+
+extension String {
+    func capitalizingFirstLetter() -> String {
+        return prefix(1).uppercased() + dropFirst()
+    }
+    
+    mutating func capitalizeFirstLetter() {
+        self = self.capitalizingFirstLetter()
     }
 }
