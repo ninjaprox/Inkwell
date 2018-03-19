@@ -32,6 +32,10 @@ public final class FontOperation {
     init(operation: InternalFontOperation) {
         self.operation = operation
     }
+    
+    public func waitUntilFinished() {
+        self.operation.waitUntilFinished()
+    }
 
     /// Cancel the operation.
     public func cancel() {
