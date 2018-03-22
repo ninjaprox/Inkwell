@@ -74,7 +74,7 @@ class StorageTests: XCTestCase {
         var font = Font(family: "Arial", variant: .regular)
         XCTAssertTrue(storage.fileExists(for: font))
 
-        font = Font(family: "Arial", variant: ._700)
+        font = Font(family: "Arial", variant: .bold)
         XCTAssertFalse(storage.fileExists(for: font))
     }
 
@@ -89,7 +89,7 @@ class StorageTests: XCTestCase {
         let font = Font(family: "Arial", variant: .regular)
         let url = storage.URL(for: font)
 
-        XCTAssertTrue(url.absoluteString.hasSuffix("/me.vinhis.Inkwell/fonts/Arial-regular.ttf"))
+        XCTAssertTrue(url.absoluteString.hasSuffix("/me.vinhis.Inkwell/fonts/Arial-Regular.ttf"))
     }
 
     func test_removeGoogleFontsMetadata() {

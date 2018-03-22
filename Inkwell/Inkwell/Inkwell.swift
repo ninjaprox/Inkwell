@@ -97,4 +97,37 @@ public final class Inkwell {
 
         return FontOperation(operation: operation)
     }
+    
+    /// Create the `UIFont` with specified font information.
+    ///
+    /// - Note: Google Fonts has higher priority
+    ///         that means the `at` param is only used unless the given font
+    ///         information is found on Google Fonts, otherwise the `at` param
+    ///         is ignored.
+    ///
+    /// - Parameters:
+    ///   - font: The font information.
+    ///   - size: The font size.
+    ///   - at: The URL used to download the font file. Default is `nil`.
+    /// - Returns: The font.
+    @discardableResult
+    public func fontSync(for font: Font,
+                     size: CGFloat,
+                     at url: URL? = nil) -> UIFont? {
+        var foundFount: UIFont? = nil
+        let operation = InternalFontOperation(storage: storage,
+                                              nameDictionary: nameDictionary,
+                                              fontRegister: fontRegister,
+                                              fontDownloader: fontDownloader,
+                                              googleFontsMetadata: googleFontsMetadata,
+                                              font: font,
+                                              size: size,
+                                              url: url) { uifont in
+                                                foundFount = uifont
+                                              }
+        
+        operationQueue.addOperation(operation)
+        operation.waitUntilFinished()
+        return foundFount
+    }
 }

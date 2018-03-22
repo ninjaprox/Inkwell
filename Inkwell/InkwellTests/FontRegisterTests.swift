@@ -53,7 +53,7 @@ class FontRegisterTests: XCTestCase {
         let provider = CGDataProvider(data: data as CFData)
         let cgfont = CGFont(provider!)
 
-        CTFontManagerUnregisterGraphicsFont(cgfont, nil)
+        CTFontManagerUnregisterGraphicsFont(cgfont!, nil)
         try? FileManager.default.removeItem(atPath: nameDictionaryURL.path)
 
         fontURL = nil
@@ -100,7 +100,7 @@ class FontRegisterTests: XCTestCase {
 
     func test_register_fileNotFound() {
         storage.fontURL = URL(string: "fileNotFound")!
-        let font = Font(family: "ABeeZee", variant: ._700)
+        let font = Font(family: "ABeeZee", variant: .bold)
         let result = fontRegister.register(font)
         let postScriptName = nameDictionary.postscriptName(for: font)
         let uifont = UIFont(name: "ABeeZee-Bold", size: 10)

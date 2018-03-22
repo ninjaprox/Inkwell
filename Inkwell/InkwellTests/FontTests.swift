@@ -29,35 +29,35 @@ import XCTest
 class FontTests: XCTestCase {
 
     func test_init() {
-        let font = Font(family: "Arial", variant: ._700)
+        let font = Font(family: "Arial", variant: .bold)
 
         XCTAssertEqual(font.family, "Arial")
-        XCTAssertEqual(font.variant, ._700)
+        XCTAssertEqual(font.variant, .bold)
     }
 
     func test_name() {
-        let font = Font(family: "Arial", variant: ._700)
+        let font = Font(family: "Arial", variant: .bold)
 
-        XCTAssertEqual(font.name, "Arial-700")
+        XCTAssertEqual(font.name, "Arial-Bold")
     }
 
     func test_filname() {
-        let font = Font(family: "Arial", variant: ._700)
+        let font = Font(family: "Arial", variant: .bold)
 
-        XCTAssertEqual(font.filename, "Arial-700.ttf")
+        XCTAssertEqual(font.filename, "Arial-Bold.ttf")
     }
 
     func test_variant() {
         var variant: Font.Variant = .regular
         XCTAssertEqual(variant.rawValue, "regular")
 
-        variant = ._700
+        variant = .bold
         XCTAssertEqual(variant.rawValue, "700")
 
-        variant = .italic
+        variant = .regularItalic
         XCTAssertEqual(variant.rawValue, "italic")
 
-        variant = ._700italic
+        variant = .boldItalic
         XCTAssertEqual(variant.rawValue, "700italic")
     }
 }
